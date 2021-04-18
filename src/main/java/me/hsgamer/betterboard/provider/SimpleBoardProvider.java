@@ -1,5 +1,6 @@
 package me.hsgamer.betterboard.provider;
 
+import me.hsgamer.betterboard.api.BoardFrame;
 import me.hsgamer.betterboard.api.provider.ConfigurableBoardProvider;
 import me.hsgamer.betterboard.hook.PlaceholderAPIHook;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
@@ -23,15 +24,13 @@ public class SimpleBoardProvider implements ConfigurableBoardProvider {
     }
 
     @Override
-    public String fetchTitle(Player player) {
-        return MessageUtils.colorize(PlaceholderAPIHook.setPlaceholders(title, player));
-    }
-
-    @Override
-    public List<String> fetchLines(Player player) {
-        return lines.stream()
-                .map(s -> PlaceholderAPIHook.setPlaceholders(s, player))
-                .map(MessageUtils::colorize)
-                .collect(Collectors.toList());
+    public Optional<BoardFrame> fetch(Player player) {
+        return Optional.of(new BoardFrame(
+                MessageUtils.colorize(PlaceholderAPIHook.setPlaceholders(title, player)),
+                lines.stream()
+                        .map(s -> PlaceholderAPIHook.setPlaceholders(s, player))
+                        .map(MessageUtils::colorize)
+                        .collect(Collectors.toList())
+        ));
     }
 }

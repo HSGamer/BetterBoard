@@ -2,7 +2,7 @@ package me.hsgamer.betterboard.board;
 
 import fr.mrmicky.fastboard.FastBoard;
 import me.hsgamer.betterboard.BetterBoard;
-import me.hsgamer.betterboard.api.provider.BoardProvider;
+import me.hsgamer.betterboard.api.BoardFrame;
 import me.hsgamer.betterboard.config.MainConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -38,14 +38,14 @@ public class Board extends BukkitRunnable {
 
     @Override
     public void run() {
-        Optional<BoardProvider> optional = instance.getBoardProviderManager().getProvider(player);
+        Optional<BoardFrame> optional = instance.getBoardProviderManager().getProvider(player).flatMap(boardProvider -> boardProvider.fetch(player));
         if (optional.isPresent()) {
-            BoardProvider provider = optional.get();
+            BoardFrame frame = optional.get();
             if (fastBoard == null || fastBoard.isDeleted()) {
                 fastBoard = new FastBoard(player);
             }
-            fastBoard.updateTitle(provider.fetchTitle(player));
-            fastBoard.updateLines(provider.fetchLines(player));
+            fastBoard.updateTitle(frame.getTitle());
+            fastBoard.updateLines(frame.getLines());
         } else if (fastBoard != null && !fastBoard.isDeleted()) {
             fastBoard.delete();
             fastBoard = null;
