@@ -4,15 +4,13 @@ import fr.mrmicky.fastboard.FastBoard;
 import me.hsgamer.betterboard.BetterBoard;
 import me.hsgamer.betterboard.api.provider.BoardProvider;
 import me.hsgamer.betterboard.config.MainConfig;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Optional;
 
-public class Board {
+public class Board extends BukkitRunnable {
     private final Player player;
-    private final BukkitTask bukkitTask;
     private final BetterBoard instance;
     private FastBoard fastBoard;
 
@@ -24,13 +22,22 @@ public class Board {
         boolean async = MainConfig.UPDATE_ASYNC.getValue();
         update = Math.max(update, 0);
         if (async) {
-            this.bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(instance, this::update, update, update);
+            runTaskTimerAsynchronously(instance, update, update);
         } else {
-            this.bukkitTask = Bukkit.getScheduler().runTaskTimer(instance, this::update, update, update);
+            runTaskTimer(instance, update, update);
         }
     }
 
-    private void update() {
+    @Override
+    public synchronized void cancel() {
+        super.cancel();
+        if (fastBoard != null && !fastBoard.isDeleted()) {
+            fastBoard.delete();
+        }
+    }
+
+    @Override
+    public void run() {
         Optional<BoardProvider> optional = instance.getBoardProviderManager().getProvider(player);
         if (optional.isPresent()) {
             BoardProvider provider = optional.get();
@@ -42,13 +49,6 @@ public class Board {
         } else if (fastBoard != null && !fastBoard.isDeleted()) {
             fastBoard.delete();
             fastBoard = null;
-        }
-    }
-
-    public void cancel() {
-        bukkitTask.cancel();
-        if (fastBoard != null && !fastBoard.isDeleted()) {
-            fastBoard.delete();
         }
     }
 }
