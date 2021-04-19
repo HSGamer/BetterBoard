@@ -2,6 +2,7 @@ package me.hsgamer.betterboard.command;
 
 import me.hsgamer.betterboard.BetterBoard;
 import me.hsgamer.betterboard.Permissions;
+import me.hsgamer.betterboard.manager.PluginVariableManager;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -29,8 +30,10 @@ public class ReloadCommand extends Command {
 
         instance.getPlayerBoardManager().clearAll();
         instance.getBoardProviderManager().clearAll();
+        PluginVariableManager.unregisterAll();
         instance.getMainConfig().reload();
         instance.getBoardProviderManager().loadProviders();
+        PluginVariableManager.registerDefaultVariables();
         for (Player player : Bukkit.getOnlinePlayers()) {
             instance.getPlayerBoardManager().addBoard(player);
         }
