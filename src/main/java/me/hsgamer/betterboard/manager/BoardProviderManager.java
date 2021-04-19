@@ -10,9 +10,10 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BoardProviderManager {
-    private final List<BoardProvider> providers = new ArrayList<>();
+    private final List<BoardProvider> providers = new CopyOnWriteArrayList<>();
     private final Plugin plugin;
 
     public BoardProviderManager(Plugin plugin) {

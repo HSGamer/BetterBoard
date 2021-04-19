@@ -5,11 +5,11 @@ import me.hsgamer.betterboard.builder.ConditionBuilder;
 import me.hsgamer.hscore.config.Config;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ConditionalBoardProvider extends SimpleBoardProvider {
-    private final List<Condition> conditions = new ArrayList<>();
+    private final List<Condition> conditions = new CopyOnWriteArrayList<>();
 
     @Override
     public boolean canFetch(Player player) {
