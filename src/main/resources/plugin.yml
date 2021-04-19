@@ -2,5 +2,5 @@ name: BetterBoard
 version: ${project.version}
 main: me.hsgamer.betterboard.BetterBoard
 api-version: 1.16
-depend: [ PlaceholderAPI ]
+softdepend: [ PlaceholderAPI ]
 authors: [ HSGamer ]
