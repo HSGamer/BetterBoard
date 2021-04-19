@@ -1,8 +1,8 @@
 package me.hsgamer.betterboard.condition;
 
 import me.hsgamer.betterboard.api.condition.ConfigurableCondition;
-import me.hsgamer.betterboard.hook.PlaceholderAPIHook;
 import me.hsgamer.hscore.common.CollectionUtils;
+import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ public class PermissionCondition implements ConfigurableCondition {
     @Override
     public boolean check(Player player) {
         return list.stream()
-                .map(s -> PlaceholderAPIHook.setPlaceholders(s, player))
+                .map(s -> VariableManager.setVariables(s, player.getUniqueId()))
                 .allMatch(s -> hasPermission(player, s));
     }
 

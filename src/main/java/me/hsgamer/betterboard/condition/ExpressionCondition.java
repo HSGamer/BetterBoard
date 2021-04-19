@@ -1,9 +1,9 @@
 package me.hsgamer.betterboard.condition;
 
 import me.hsgamer.betterboard.api.condition.ConfigurableCondition;
-import me.hsgamer.betterboard.hook.PlaceholderAPIHook;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.expression.ExpressionUtils;
+import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
@@ -16,7 +16,7 @@ public class ExpressionCondition implements ConfigurableCondition {
 
     @Override
     public boolean check(Player player) {
-        List<String> parsed = list.stream().map(s -> PlaceholderAPIHook.setPlaceholders(s, player)).collect(Collectors.toList());
+        List<String> parsed = list.stream().map(s -> VariableManager.setVariables(s, player.getUniqueId())).collect(Collectors.toList());
         for (String s : parsed) {
             if (!ExpressionUtils.isBoolean(s)) {
                 continue;
