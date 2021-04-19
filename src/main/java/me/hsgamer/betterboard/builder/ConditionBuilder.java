@@ -12,7 +12,7 @@ public class ConditionBuilder extends Builder<Object, Condition> {
     public static final ConditionBuilder INSTANCE = new ConditionBuilder();
 
     public ConditionBuilder() {
-        register(ExpressionCondition.class, "expression");
+        register(ExpressionCondition.class, "expression", "condition");
         register(o -> new FirstTimeCondition(), "first-time", "first-played", "not-played-before");
         register(LevelCondition.class, "level");
         register(PermissionCondition.class, "permission", "perms", "perm", "permissions");
@@ -25,6 +25,7 @@ public class ConditionBuilder extends Builder<Object, Condition> {
                 condition.loadFromObject(object);
                 return condition;
             } catch (Exception e) {
+                e.printStackTrace();
                 return null;
             }
         }, name, aliases);

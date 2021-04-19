@@ -24,6 +24,7 @@ public class BoardProviderBuilder extends Builder<Config, BoardProvider> {
                 provider.loadFromConfig(config);
                 return provider;
             } catch (Exception e) {
+                e.printStackTrace();
                 return null;
             }
         }, name, aliases);
