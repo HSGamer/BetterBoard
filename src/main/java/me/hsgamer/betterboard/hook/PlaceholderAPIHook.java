@@ -17,6 +17,10 @@ public class PlaceholderAPIHook {
         return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
     }
 
+    public static boolean hasPlaceholders(String message) {
+        return PlaceholderAPI.containsPlaceholders(message);
+    }
+
     public static String setPlaceholders(String message, OfflinePlayer executor) {
         return PlaceholderAPI.setPlaceholders(executor, message);
     }
