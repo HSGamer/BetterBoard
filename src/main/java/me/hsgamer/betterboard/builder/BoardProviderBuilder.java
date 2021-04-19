@@ -2,7 +2,6 @@ package me.hsgamer.betterboard.builder;
 
 import me.hsgamer.betterboard.api.provider.BoardProvider;
 import me.hsgamer.betterboard.api.provider.ConfigurableBoardProvider;
-import me.hsgamer.betterboard.provider.ConditionalBoardProvider;
 import me.hsgamer.betterboard.provider.SimpleBoardProvider;
 import me.hsgamer.hscore.builder.Builder;
 import me.hsgamer.hscore.config.Config;
@@ -14,7 +13,6 @@ public class BoardProviderBuilder extends Builder<Config, BoardProvider> {
 
     private BoardProviderBuilder() {
         register(SimpleBoardProvider.class, "simple");
-        register(ConditionalBoardProvider.class, "conditional", "condition");
     }
 
     public void register(Class<? extends ConfigurableBoardProvider> clazz, String name, String... aliases) {
