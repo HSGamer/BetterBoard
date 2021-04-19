@@ -21,4 +21,10 @@ public class ConditionalBoardProvider extends SimpleBoardProvider {
         super.loadFromConfig(config);
         this.conditions.addAll(ConditionBuilder.INSTANCE.build(config.getNormalizedValues("condition", false)).values());
     }
+
+    @Override
+    public void clear() {
+        this.conditions.forEach(Condition::clear);
+        this.conditions.clear();
+    }
 }

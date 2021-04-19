@@ -33,4 +33,10 @@ public class SimpleBoardProvider implements ConfigurableBoardProvider {
                         .collect(Collectors.toList())
         ));
     }
+
+    @Override
+    public void clear() {
+        this.lines.clear();
+        this.title = "";
+    }
 }
