@@ -5,10 +5,10 @@ import me.hsgamer.betterboard.api.BoardFrame;
 import me.hsgamer.betterboard.api.condition.Condition;
 import me.hsgamer.betterboard.api.provider.ConfigurableBoardProvider;
 import me.hsgamer.betterboard.builder.ConditionBuilder;
-import me.hsgamer.betterboard.hook.PlaceholderAPIHook;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.Config;
+import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -34,12 +34,12 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
     public Optional<BoardFrame> fetch(Player player) {
         String fetchedTitle = Optional.ofNullable(title)
                 .map(AnimatedString::getString)
-                .map(s -> PlaceholderAPIHook.setPlaceholders(s, player))
+                .map(s -> VariableManager.setVariables(s, player.getUniqueId()))
                 .map(MessageUtils::colorize)
                 .orElse("");
         List<String> fetchedLines = lines.stream()
                 .map(AnimatedString::getString)
-                .map(s -> PlaceholderAPIHook.setPlaceholders(s, player))
+                .map(s -> VariableManager.setVariables(s, player.getUniqueId()))
                 .map(MessageUtils::colorize)
                 .collect(Collectors.toList());
         return Optional.of(new BoardFrame(fetchedTitle, fetchedLines));
