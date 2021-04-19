@@ -28,13 +28,21 @@ public class BoardProviderManager {
         List<Config> providerConfigs = getProviderConfigs(folder);
         providerConfigs.forEach(Config::setup);
 
+        // PRIORITY
         for (String providerName : MainConfig.PRIORITY_PROVIDERS.getValue()) {
             providerConfigs
                     .stream()
                     .filter(config -> config.getName().equals(providerName))
                     .findFirst()
-                    .flatMap(BoardProviderBuilder.INSTANCE::build)
-                    .ifPresent(providers::add);
+                    .ifPresent(config -> {
+                        providerConfigs.remove(config);
+                        BoardProviderBuilder.INSTANCE.build(config).ifPresent(providers::add);
+                    });
+        }
+
+        // REMAINING
+        for (Config config : providerConfigs) {
+            BoardProviderBuilder.INSTANCE.build(config).ifPresent(providers::add);
         }
     }
 
