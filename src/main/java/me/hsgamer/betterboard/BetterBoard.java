@@ -1,11 +1,13 @@
 package me.hsgamer.betterboard;
 
+import me.hsgamer.betterboard.command.ReloadCommand;
 import me.hsgamer.betterboard.config.MainConfig;
 import me.hsgamer.betterboard.hook.PlaceholderAPIHook;
 import me.hsgamer.betterboard.listener.PlayerListener;
 import me.hsgamer.betterboard.manager.BoardProviderManager;
 import me.hsgamer.betterboard.manager.PlayerBoardManager;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 
 public final class BetterBoard extends BasePlugin {
     private final MainConfig mainConfig = new MainConfig(this);
@@ -15,6 +17,7 @@ public final class BetterBoard extends BasePlugin {
 
     @Override
     public void load() {
+        MessageUtils.setPrefix("&f[&6BetterBoard&f] ");
         mainConfig.setup();
     }
 
@@ -25,6 +28,8 @@ public final class BetterBoard extends BasePlugin {
         }
 
         registerListener(new PlayerListener(this));
+
+        registerCommand(new ReloadCommand(this));
     }
 
     @Override
@@ -35,6 +40,7 @@ public final class BetterBoard extends BasePlugin {
     @Override
     public void disable() {
         playerBoardManager.clearAll();
+        boardProviderManager.clearAll();
     }
 
     public MainConfig getMainConfig() {

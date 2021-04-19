@@ -37,6 +37,11 @@ public class BoardProviderManager {
         }
     }
 
+    public void clearAll() {
+        providers.forEach(BoardProvider::clear);
+        providers.clear();
+    }
+
     private List<Config> getProviderConfigs(File file) {
         List<Config> list = new ArrayList<>();
         if (file.isDirectory()) {

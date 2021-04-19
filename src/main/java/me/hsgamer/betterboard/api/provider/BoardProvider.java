@@ -10,5 +10,9 @@ public interface BoardProvider {
         return true;
     }
 
+    default void clear() {
+        // EMPTY
+    }
+
     Optional<BoardFrame> fetch(Player player);
 }
