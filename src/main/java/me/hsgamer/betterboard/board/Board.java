@@ -18,7 +18,7 @@ public class Board extends BukkitRunnable {
         this.instance = instance;
         this.player = player;
 
-        int update = MainConfig.UPDATE_TICKS.getValue();
+        long update = MainConfig.UPDATE_TICKS.getValue();
         boolean async = MainConfig.UPDATE_ASYNC.getValue();
         update = Math.max(update, 0);
         if (async) {

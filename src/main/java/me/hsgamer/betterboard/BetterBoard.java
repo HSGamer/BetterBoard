@@ -8,12 +8,17 @@ import me.hsgamer.betterboard.manager.BoardProviderManager;
 import me.hsgamer.betterboard.manager.PlayerBoardManager;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public final class BetterBoard extends BasePlugin {
     private final MainConfig mainConfig = new MainConfig(this);
 
     private final BoardProviderManager boardProviderManager = new BoardProviderManager(this);
     private final PlayerBoardManager playerBoardManager = new PlayerBoardManager(this);
+
+    public static BetterBoard getInstance() {
+        return JavaPlugin.getPlugin(BetterBoard.class);
+    }
 
     @Override
     public void load() {

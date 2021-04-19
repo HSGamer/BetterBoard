@@ -10,14 +10,13 @@ import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.Config;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 public class SimpleBoardProvider implements ConfigurableBoardProvider {
-    private final List<String> lines = new ArrayList<>();
+    private final List<String> lines = new CopyOnWriteArrayList<>();
     private final List<Condition> conditions = new CopyOnWriteArrayList<>();
     private String title = "";
 
