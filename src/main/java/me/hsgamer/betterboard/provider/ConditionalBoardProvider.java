@@ -24,6 +24,7 @@ public class ConditionalBoardProvider extends SimpleBoardProvider {
 
     @Override
     public void clear() {
+        super.clear();
         this.conditions.forEach(Condition::clear);
         this.conditions.clear();
     }
