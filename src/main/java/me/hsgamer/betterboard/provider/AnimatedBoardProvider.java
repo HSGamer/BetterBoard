@@ -2,9 +2,7 @@ package me.hsgamer.betterboard.provider;
 
 import me.hsgamer.betterboard.BetterBoard;
 import me.hsgamer.betterboard.api.BoardFrame;
-import me.hsgamer.betterboard.api.condition.Condition;
 import me.hsgamer.betterboard.api.provider.ConfigurableBoardProvider;
-import me.hsgamer.betterboard.builder.ConditionBuilder;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.Config;
@@ -22,12 +20,12 @@ import java.util.stream.Stream;
 
 public class AnimatedBoardProvider implements ConfigurableBoardProvider {
     private final List<AnimatedString> lines = new CopyOnWriteArrayList<>();
-    private final List<Condition> conditions = new CopyOnWriteArrayList<>();
+    private final ConditionProvider conditionProvider = new ConditionProvider();
     private AnimatedString title;
 
     @Override
     public boolean canFetch(Player player) {
-        return this.conditions.parallelStream().allMatch(condition -> condition.check(player));
+        return this.conditionProvider.check(player);
     }
 
     @Override
@@ -47,7 +45,7 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
 
     @Override
     public void loadFromConfig(Config config) {
-        this.conditions.addAll(ConditionBuilder.INSTANCE.build(config.getNormalizedValues("condition", false)).values());
+        this.conditionProvider.loadFromMap(config.getNormalizedValues("condition", false));
 
         this.title = loadAnimatedString(config.getNormalizedValues("title", false)).orElse(null);
         this.lines.addAll(
@@ -71,8 +69,7 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
             title.cancel();
         }
         this.title = null;
-        this.conditions.forEach(Condition::clear);
-        this.conditions.clear();
+        this.conditionProvider.clear();
     }
 
     private Optional<AnimatedString> loadAnimatedString(Map<String, Object> map) {
