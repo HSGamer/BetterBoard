@@ -41,12 +41,14 @@ public class Board extends BukkitRunnable {
         Optional<BoardFrame> optional = instance.getBoardProviderManager().getProvider(player).flatMap(boardProvider -> boardProvider.fetch(player));
         if (optional.isPresent()) {
             BoardFrame frame = optional.get();
-            if (fastBoard == null || fastBoard.isDeleted()) {
+            if ((fastBoard == null || fastBoard.isDeleted()) && !isCancelled()) {
                 fastBoard = new FastBoard(player);
             }
-            fastBoard.updateTitle(frame.getTitle());
-            fastBoard.updateLines(frame.getLines());
-        } else if (fastBoard != null && !fastBoard.isDeleted()) {
+            if (!isCancelled()) {
+                fastBoard.updateTitle(frame.getTitle());
+                fastBoard.updateLines(frame.getLines());
+            }
+        } else if (fastBoard != null && !fastBoard.isDeleted() && !isCancelled()) {
             fastBoard.delete();
             fastBoard = null;
         }
