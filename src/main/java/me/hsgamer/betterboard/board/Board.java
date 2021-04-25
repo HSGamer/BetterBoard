@@ -46,6 +46,8 @@ public class Board extends BukkitRunnable {
             }
             if (fastBoard != null && !fastBoard.isDeleted() && !isCancelled()) {
                 fastBoard.updateTitle(frame.getTitle());
+            }
+            if (fastBoard != null && !fastBoard.isDeleted() && !isCancelled()) {
                 fastBoard.updateLines(frame.getLines());
             }
         } else if (fastBoard != null && !fastBoard.isDeleted() && !isCancelled()) {
