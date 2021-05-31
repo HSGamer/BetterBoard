@@ -50,7 +50,7 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
         this.title = loadAnimatedString(config.getNormalizedValues("title", false)).orElse(null);
         this.lines.addAll(
                 config.getNormalizedValues("lines", false).values().stream()
-                        .filter(o -> o instanceof Map)
+                        .filter(Map.class::isInstance)
                         .map(o -> (Map<String, Object>) o)
                         .flatMap(map -> loadAnimatedString(map).map(Stream::of).orElse(Stream.empty()))
                         .collect(Collectors.toList())
