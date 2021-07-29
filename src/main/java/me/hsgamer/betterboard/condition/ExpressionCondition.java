@@ -9,23 +9,15 @@ import org.bukkit.entity.Player;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ExpressionCondition implements ConfigurableCondition {
     private final List<String> list = new ArrayList<>();
 
     @Override
     public boolean check(Player player) {
-        List<String> parsed = list.stream().map(s -> VariableManager.setVariables(s, player.getUniqueId())).collect(Collectors.toList());
-        for (String s : parsed) {
-            if (!ExpressionUtils.isBoolean(s)) {
-                continue;
-            }
-            if (BigDecimal.ZERO.equals(ExpressionUtils.getResult(s))) {
-                return false;
-            }
-        }
-        return true;
+        return list.parallelStream()
+                .map(s -> VariableManager.setVariables(s, player.getUniqueId()))
+                .noneMatch(expression -> BigDecimal.ZERO.equals(ExpressionUtils.getResult(expression)));
     }
 
     @Override
