@@ -1,6 +1,5 @@
 package me.hsgamer.betterboard.provider;
 
-import me.hsgamer.betterboard.BetterBoard;
 import me.hsgamer.betterboard.api.BoardFrame;
 import me.hsgamer.betterboard.api.provider.ConfigurableBoardProvider;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
@@ -8,6 +7,7 @@ import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collections;
@@ -51,7 +51,7 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
         this.lines.addAll(
                 config.getNormalizedValues("lines", false).values().stream()
                         .filter(Map.class::isInstance)
-                        .map(o -> (Map<String, Object>) o)
+                        .<Map<String, Object>>map(Map.class::cast)
                         .flatMap(map -> loadAnimatedString(map).map(Stream::of).orElse(Stream.empty()))
                         .collect(Collectors.toList())
         );
@@ -101,9 +101,9 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
             this.list = list;
             update = Math.max(update, 0);
             if (async) {
-                runTaskTimerAsynchronously(BetterBoard.getInstance(), update, update);
+                runTaskTimerAsynchronously(JavaPlugin.getProvidingPlugin(getClass()), update, update);
             } else {
-                runTaskTimer(BetterBoard.getInstance(), update, update);
+                runTaskTimer(JavaPlugin.getProvidingPlugin(getClass()), update, update);
             }
         }
 
