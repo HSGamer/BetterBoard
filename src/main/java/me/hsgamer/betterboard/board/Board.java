@@ -33,26 +33,29 @@ public class Board extends BukkitRunnable {
         super.cancel();
         if (fastBoard != null && !fastBoard.isDeleted()) {
             fastBoard.delete();
+            fastBoard = null;
         }
     }
 
     @Override
     public void run() {
         Optional<BoardFrame> optional = instance.getBoardProviderManager().getProvider(player).flatMap(boardProvider -> boardProvider.fetch(player));
-        if (optional.isPresent()) {
-            BoardFrame frame = optional.get();
-            if ((fastBoard == null || fastBoard.isDeleted()) && !isCancelled()) {
-                fastBoard = new FastBoard(player);
-            }
-            if (fastBoard != null && !fastBoard.isDeleted() && !isCancelled()) {
+        try {
+            if (optional.isPresent()) {
+                BoardFrame frame = optional.get();
+                if (fastBoard == null || fastBoard.isDeleted()) {
+                    fastBoard = new FastBoard(player);
+                }
                 fastBoard.updateTitle(frame.getTitle());
-            }
-            if (fastBoard != null && !fastBoard.isDeleted() && !isCancelled()) {
                 fastBoard.updateLines(frame.getLines());
+            } else if (fastBoard != null) {
+                if (!fastBoard.isDeleted()) {
+                    fastBoard.delete();
+                }
+                fastBoard = null;
             }
-        } else if (fastBoard != null && !fastBoard.isDeleted() && !isCancelled()) {
-            fastBoard.delete();
-            fastBoard = null;
+        } catch (RuntimeException ignored) {
+            // IGNORED
         }
     }
 }
