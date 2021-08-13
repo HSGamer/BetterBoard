@@ -55,13 +55,9 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
 
     @Override
     public void clear() {
-        this.lines.forEach(line -> {
-            if (!line.isCancelled()) {
-                line.cancel();
-            }
-        });
+        this.lines.forEach(BukkitRunnable::cancel);
         this.lines.clear();
-        if (title != null && !title.isCancelled()) {
+        if (title != null) {
             title.cancel();
         }
         this.title = null;
@@ -98,11 +94,13 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
 
     private static class AnimatedString extends BukkitRunnable {
         private final List<String> list;
+        private final boolean isSchedule;
         private int index = 0;
 
         private AnimatedString(List<String> list, long update, boolean async) {
             this.list = list;
-            if (update >= 0) {
+            this.isSchedule = update >= 0;
+            if (isSchedule) {
                 if (async) {
                     runTaskTimerAsynchronously(JavaPlugin.getProvidingPlugin(getClass()), update, update);
                 } else {
@@ -114,6 +112,13 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
         @Override
         public void run() {
             this.index = (index + 1) % list.size();
+        }
+
+        @Override
+        public synchronized void cancel() throws IllegalStateException {
+            if (isSchedule) {
+                super.cancel();
+            }
         }
 
         private String getString() {
