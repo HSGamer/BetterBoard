@@ -46,14 +46,10 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
     @Override
     public void loadFromConfig(Config config) {
         this.conditionProvider.loadFromMap(config.getNormalizedValues("condition", false));
-
         this.title = loadAnimatedString(config.getNormalizedValues("title", false)).orElse(null);
+        List<?> list = config.getInstance("lines", Collections.emptyList(), List.class);
         this.lines.addAll(
-                config.getNormalizedValues("lines", false).values().stream()
-                        .filter(Map.class::isInstance)
-                        .<Map<String, Object>>map(Map.class::cast)
-                        .flatMap(map -> loadAnimatedString(map).map(Stream::of).orElse(Stream.empty()))
-                        .collect(Collectors.toList())
+                list.stream().flatMap(o -> loadAnimatedString(o).map(Stream::of).orElse(Stream.empty())).collect(Collectors.toList())
         );
     }
 
@@ -72,25 +68,30 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
         this.conditionProvider.clear();
     }
 
-    private Optional<AnimatedString> loadAnimatedString(Map<String, Object> map) {
-        List<String> list = Optional.ofNullable(map.get("list"))
-                .map(o -> CollectionUtils.createStringListFromObject(o, false))
-                .orElse(Collections.singletonList(""));
-        if (list.isEmpty()) {
-            return Optional.empty();
+    private Optional<AnimatedString> loadAnimatedString(Object value) {
+        if (value instanceof Map) {
+            Map<?, ?> map = (Map<?, ?>) value;
+            List<String> list = Optional.ofNullable(map.get("list"))
+                    .map(o -> CollectionUtils.createStringListFromObject(o, false))
+                    .orElse(Collections.singletonList(""));
+            if (list.isEmpty()) {
+                return Optional.empty();
+            }
+
+            long update = Optional.ofNullable(map.get("update"))
+                    .map(String::valueOf)
+                    .map(Long::parseLong)
+                    .map(l -> Math.max(l, 0L))
+                    .orElse(0L);
+            boolean async = Optional.ofNullable(map.get("async"))
+                    .map(String::valueOf)
+                    .map(Boolean::parseBoolean)
+                    .orElse(false);
+
+            return Optional.of(new AnimatedString(list, update, async));
+        } else {
+            return Optional.of(new AnimatedString(Collections.singletonList(String.valueOf(value)), -1, false));
         }
-
-        long update = Optional.ofNullable(map.get("update"))
-                .map(String::valueOf)
-                .map(Long::parseLong)
-                .map(l -> Math.max(l, 0L))
-                .orElse(0L);
-        boolean async = Optional.ofNullable(map.get("async"))
-                .map(String::valueOf)
-                .map(Boolean::parseBoolean)
-                .orElse(false);
-
-        return Optional.of(new AnimatedString(list, update, async));
     }
 
     private static class AnimatedString extends BukkitRunnable {
@@ -99,11 +100,12 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
 
         private AnimatedString(List<String> list, long update, boolean async) {
             this.list = list;
-            update = Math.max(update, 0);
-            if (async) {
-                runTaskTimerAsynchronously(JavaPlugin.getProvidingPlugin(getClass()), update, update);
-            } else {
-                runTaskTimer(JavaPlugin.getProvidingPlugin(getClass()), update, update);
+            if (update >= 0) {
+                if (async) {
+                    runTaskTimerAsynchronously(JavaPlugin.getProvidingPlugin(getClass()), update, update);
+                } else {
+                    runTaskTimer(JavaPlugin.getProvidingPlugin(getClass()), update, update);
+                }
             }
         }
 
