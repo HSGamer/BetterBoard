@@ -89,8 +89,10 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
                     .orElse(false);
 
             return Optional.of(new AnimatedString(list, update, async));
+        } else if (value instanceof String) {
+            return Optional.of(new AnimatedString(Collections.singletonList((String) value), -1, false));
         } else {
-            return Optional.of(new AnimatedString(Collections.singletonList(String.valueOf(value)), -1, false));
+            return Optional.empty();
         }
     }
 
