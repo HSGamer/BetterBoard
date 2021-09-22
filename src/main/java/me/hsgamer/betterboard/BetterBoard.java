@@ -22,10 +22,6 @@ public final class BetterBoard extends BasePlugin {
     private final BoardProviderManager boardProviderManager = new BoardProviderManager(this);
     private final PlayerBoardManager playerBoardManager = new PlayerBoardManager(this);
 
-    public static BetterBoard getInstance() {
-        return JavaPlugin.getPlugin(BetterBoard.class);
-    }
-
     @Override
     public void load() {
         MessageUtils.setPrefix("&f[&6BetterBoard&f] ");
