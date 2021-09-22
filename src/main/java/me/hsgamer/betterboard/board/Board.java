@@ -4,6 +4,7 @@ import fr.mrmicky.fastboard.FastBoard;
 import me.hsgamer.betterboard.BetterBoard;
 import me.hsgamer.betterboard.api.BoardFrame;
 import me.hsgamer.betterboard.config.MainConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -28,6 +29,23 @@ public class Board extends BukkitRunnable {
         }
     }
 
+    private static FastBoard createBoard(Player player) {
+        return new FastBoard(player) {
+            @Override
+            protected boolean hasLinesMaxLength() {
+                if (super.hasLinesMaxLength()) {
+                    return true;
+                } else if (Bukkit.getPluginManager().isPluginEnabled("ViaVersion")) {
+                    // noinspection unchecked
+                    return com.viaversion.viaversion.api.Via.getAPI().getPlayerVersion(getPlayer()) < com.viaversion.viaversion.api.protocol.version.ProtocolVersion.v1_13.getVersion();
+                } else if (Bukkit.getPluginManager().isPluginEnabled("ProtocolSupport")) {
+                    return protocolsupport.api.ProtocolSupportAPI.getProtocolVersion(getPlayer()).isBefore(protocolsupport.api.ProtocolVersion.MINECRAFT_1_13);
+                }
+                return false;
+            }
+        };
+    }
+
     @Override
     public synchronized void cancel() {
         super.cancel();
@@ -44,7 +62,7 @@ public class Board extends BukkitRunnable {
             if (optional.isPresent()) {
                 BoardFrame frame = optional.get();
                 if (fastBoard == null || fastBoard.isDeleted()) {
-                    fastBoard = new FastBoard(player);
+                    fastBoard = createBoard(player);
                 }
                 fastBoard.updateTitle(frame.getTitle());
                 fastBoard.updateLines(frame.getLines());
