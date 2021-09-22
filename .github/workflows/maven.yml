@@ -6,9 +6,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -28,3 +26,9 @@ jobs:
         with:
           name: "BetterBoard"
           path: "./target/BetterBoard.jar"
+      - name: Upload to Discord
+        uses: sinshutu/upload-to-discord@v2.0.0
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: "./target/BetterBoard.jar"
