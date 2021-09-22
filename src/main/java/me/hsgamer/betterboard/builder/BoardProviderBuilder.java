@@ -2,8 +2,8 @@ package me.hsgamer.betterboard.builder;
 
 import me.hsgamer.betterboard.api.provider.BoardProvider;
 import me.hsgamer.betterboard.api.provider.ConfigurableBoardProvider;
-import me.hsgamer.betterboard.provider.AnimatedBoardProvider;
-import me.hsgamer.betterboard.provider.SimpleBoardProvider;
+import me.hsgamer.betterboard.provider.board.AnimatedBoardProvider;
+import me.hsgamer.betterboard.provider.board.SimpleBoardProvider;
 import me.hsgamer.hscore.builder.Builder;
 import me.hsgamer.hscore.config.Config;
 

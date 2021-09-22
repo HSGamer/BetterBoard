@@ -1,7 +1,8 @@
-package me.hsgamer.betterboard.provider;
+package me.hsgamer.betterboard.provider.board;
 
 import me.hsgamer.betterboard.api.BoardFrame;
 import me.hsgamer.betterboard.api.provider.ConfigurableBoardProvider;
+import me.hsgamer.betterboard.provider.ConditionProvider;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.Config;
