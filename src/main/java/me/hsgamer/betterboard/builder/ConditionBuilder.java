@@ -13,7 +13,7 @@ public class ConditionBuilder extends Builder<Object, Condition> {
 
     public ConditionBuilder() {
         register(ExpressionCondition.class, "expression", "condition");
-        register(o -> new FirstTimeCondition(), "first-time", "first-played", "not-played-before");
+        register(FirstTimeCondition.class, "first-time", "first-played", "not-played-before");
         register(LevelCondition.class, "level");
         register(PermissionCondition.class, "permission", "perms", "perm", "permissions");
     }
