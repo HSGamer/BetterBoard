@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class MainConfig extends PathableConfig {
+    public static final BooleanConfigPath METRICS = new BooleanConfigPath("metrics", true);
     public static final LongConfigPath UPDATE_TICKS = new LongConfigPath("update.ticks", 0L);
     public static final BooleanConfigPath UPDATE_ASYNC = new BooleanConfigPath("update.async", true);
     public static final ConfigPath<List<String>> PRIORITY_PROVIDERS = new BaseConfigPath<>("priority-providers", Collections.emptyList(), o -> CollectionUtils.createStringListFromObject(o, true));

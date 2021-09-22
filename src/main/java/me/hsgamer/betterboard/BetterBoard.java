@@ -11,6 +11,7 @@ import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.variable.ExternalStringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 
 import java.util.UUID;
@@ -48,6 +49,10 @@ public final class BetterBoard extends BasePlugin {
         registerListener(new PlayerListener(this));
 
         registerCommand(new ReloadCommand(this));
+
+        if (MainConfig.METRICS.getValue()) {
+            new Metrics(this, 12861);
+        }
     }
 
     @Override
