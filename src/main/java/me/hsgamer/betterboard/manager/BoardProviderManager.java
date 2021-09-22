@@ -24,6 +24,7 @@ public class BoardProviderManager {
         File folder = new File(plugin.getDataFolder(), "provider");
         if (!folder.exists() && folder.mkdirs()) {
             plugin.getLogger().info("Created provider folder");
+            plugin.saveResource("provider" + File.separator + "default.yml", false);
         }
         List<Config> providerConfigs = getProviderConfigs(folder);
         providerConfigs.forEach(Config::setup);
