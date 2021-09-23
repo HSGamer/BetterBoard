@@ -27,4 +27,4 @@ jobs:
         uses: actions/upload-artifact@v2.2.4
         with:
           name: "BetterBoard"
-          path: "./target/BetterBoard*.jar"
+          path: "./target/betterboard*.jar"

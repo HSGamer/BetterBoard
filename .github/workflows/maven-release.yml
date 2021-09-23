@@ -25,7 +25,7 @@ jobs:
         uses: actions/upload-artifact@v2.2.4
         with:
           name: "BetterBoard"
-          path: "./target/BetterBoard*.jar"
+          path: "./target/betterboard*.jar"
       - name: Publish Package
         run: mvn --batch-mode deploy
         env:
@@ -35,7 +35,7 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
-          args: "./target/BetterBoard*.jar"
+          args: "./target/betterboard*.jar"
       - name: Generate changelog
         id: changelog
         uses: metcalfc/changelog-generator@v1.0.0
@@ -46,6 +46,6 @@ jobs:
         with:
           body: ${{ steps.changelog.outputs.changelog }}
           fail_on_unmatched_files: true
-          files: "./target/BetterBoard*.jar"
+          files: "./target/betterboard*.jar"
           draft: false
           prerelease: false
