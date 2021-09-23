@@ -42,7 +42,7 @@ jobs:
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
       - name: GH Release
-        uses: softprops/action-gh-release@v0.1.13
+        uses: softprops/action-gh-release@v1
         with:
           body: ${{ steps.changelog.outputs.changelog }}
           fail_on_unmatched_files: true
