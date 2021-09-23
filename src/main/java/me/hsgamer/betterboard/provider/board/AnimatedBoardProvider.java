@@ -70,7 +70,7 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
             Map<?, ?> map = (Map<?, ?>) value;
             List<String> list = Optional.ofNullable(map.get("list"))
                     .map(o -> CollectionUtils.createStringListFromObject(o, false))
-                    .orElse(Collections.singletonList(""));
+                    .orElse(Collections.emptyList());
             if (list.isEmpty()) {
                 return Optional.empty();
             }
