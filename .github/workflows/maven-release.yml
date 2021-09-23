@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Set up JDK 16
         uses: actions/setup-java@v2
         with:
@@ -42,6 +44,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           stripHeaders: true
+          onlyLastTag: true
       - name: GH Release
         uses: softprops/action-gh-release@v1
         with:
