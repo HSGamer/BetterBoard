@@ -41,7 +41,6 @@ jobs:
         uses: heinrichreimer/action-github-changelog-generator@v2.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          onlyLastTag: true
           stripHeaders: true
       - name: GH Release
         uses: softprops/action-gh-release@v1
