@@ -3,6 +3,8 @@ name: Build & Upload
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
@@ -26,13 +28,3 @@ jobs:
         with:
           name: "BetterBoard"
           path: "./target/BetterBoard.jar"
-      - name: Publish Package
-        run: mvn --batch-mode deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload to Discord
-        uses: sinshutu/upload-to-discord@v2.0.0
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        with:
-          args: "./target/BetterBoard.jar"
