@@ -38,9 +38,9 @@ jobs:
           args: "./target/betterboard*.jar"
       - name: Generate changelog
         id: changelog
-        uses: metcalfc/changelog-generator@v1.0.0
+        uses: heinrichreimer/action-github-changelog-generator@v2.2
         with:
-          myToken: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: GH Release
         uses: softprops/action-gh-release@v1
         with:
