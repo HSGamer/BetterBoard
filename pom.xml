@@ -13,7 +13,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <core.version>3.19</core.version>
+        <core.version>4.0.4</core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -121,50 +121,50 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>me.HSGamer</groupId>
-            <artifactId>HSCore-bukkit-baseplugin</artifactId>
+            <groupId>me.hsgamer</groupId>
+            <artifactId>hscore-bukkit-baseplugin</artifactId>
             <version>${core.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.HSGamer</groupId>
-            <artifactId>HSCore-builder</artifactId>
+            <groupId>me.hsgamer</groupId>
+            <artifactId>hscore-builder</artifactId>
             <version>${core.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.HSGamer</groupId>
-            <artifactId>HSCore-common</artifactId>
+            <groupId>me.hsgamer</groupId>
+            <artifactId>hscore-common</artifactId>
             <version>${core.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.HSGamer</groupId>
-            <artifactId>HSCore-bukkit-config</artifactId>
+            <groupId>me.hsgamer</groupId>
+            <artifactId>hscore-bukkit-config</artifactId>
             <version>${core.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.HSGamer</groupId>
-            <artifactId>HSCore-bukkit-utils</artifactId>
+            <groupId>me.hsgamer</groupId>
+            <artifactId>hscore-bukkit-utils</artifactId>
             <version>${core.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.HSGamer</groupId>
-            <artifactId>HSCore-config-path</artifactId>
+            <groupId>me.hsgamer</groupId>
+            <artifactId>hscore-config-path</artifactId>
             <version>${core.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.HSGamer</groupId>
-            <artifactId>HSCore-expression</artifactId>
+            <groupId>me.hsgamer</groupId>
+            <artifactId>hscore-expression</artifactId>
             <version>${core.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.HSGamer</groupId>
-            <artifactId>HSCore-variable</artifactId>
+            <groupId>me.hsgamer</groupId>
+            <artifactId>hscore-variable</artifactId>
             <version>${core.version}</version>
             <optional>true</optional>
         </dependency>

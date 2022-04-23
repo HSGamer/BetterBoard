@@ -2,11 +2,11 @@ package me.hsgamer.betterboard.config;
 
 import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.common.CollectionUtils;
-import me.hsgamer.hscore.config.BaseConfigPath;
-import me.hsgamer.hscore.config.ConfigPath;
 import me.hsgamer.hscore.config.PathableConfig;
-import me.hsgamer.hscore.config.path.BooleanConfigPath;
-import me.hsgamer.hscore.config.path.LongConfigPath;
+import me.hsgamer.hscore.config.path.BaseConfigPath;
+import me.hsgamer.hscore.config.path.ConfigPath;
+import me.hsgamer.hscore.config.path.impl.BooleanConfigPath;
+import me.hsgamer.hscore.config.path.impl.LongConfigPath;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Collections;
