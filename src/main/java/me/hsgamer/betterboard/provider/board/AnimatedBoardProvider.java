@@ -1,8 +1,6 @@
 package me.hsgamer.betterboard.provider.board;
 
-import me.hsgamer.betterboard.api.BoardFrame;
-import me.hsgamer.betterboard.api.provider.ConfigurableBoardProvider;
-import me.hsgamer.betterboard.provider.ConditionProvider;
+import me.hsgamer.betterboard.provider.board.internal.BoardFrame;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.Config;
@@ -19,15 +17,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class AnimatedBoardProvider implements ConfigurableBoardProvider {
+public class AnimatedBoardProvider extends FastBoardProvider {
     private final List<AnimatedString> lines = new CopyOnWriteArrayList<>();
-    private final ConditionProvider conditionProvider = new ConditionProvider();
     private AnimatedString title;
-
-    @Override
-    public boolean canFetch(Player player) {
-        return this.conditionProvider.check(player);
-    }
 
     @Override
     public Optional<BoardFrame> fetch(Player player) {
@@ -46,7 +38,7 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
 
     @Override
     public void loadFromConfig(Config config) {
-        this.conditionProvider.loadFromMap(config.getNormalizedValues("condition", false));
+        super.loadFromConfig(config);
         this.title = loadAnimatedString(config.getNormalizedValues("title", false)).orElse(null);
         List<?> list = config.getInstance("lines", Collections.emptyList(), List.class);
         this.lines.addAll(
@@ -56,13 +48,13 @@ public class AnimatedBoardProvider implements ConfigurableBoardProvider {
 
     @Override
     public void clear() {
+        super.clear();
         this.lines.forEach(BukkitRunnable::cancel);
         this.lines.clear();
         if (title != null) {
             title.cancel();
         }
         this.title = null;
-        this.conditionProvider.clear();
     }
 
     private Optional<AnimatedString> loadAnimatedString(Object value) {

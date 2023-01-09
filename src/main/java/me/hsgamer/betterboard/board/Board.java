@@ -1,19 +1,19 @@
 package me.hsgamer.betterboard.board;
 
-import fr.mrmicky.fastboard.FastBoard;
 import me.hsgamer.betterboard.BetterBoard;
-import me.hsgamer.betterboard.api.BoardFrame;
+import me.hsgamer.betterboard.api.provider.BoardProcess;
+import me.hsgamer.betterboard.api.provider.BoardProvider;
 import me.hsgamer.betterboard.config.MainConfig;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Board extends BukkitRunnable {
     private final Player player;
     private final BetterBoard instance;
-    private FastBoard fastBoard;
+    private final AtomicReference<BoardProcess> currentProcess = new AtomicReference<>();
 
     public Board(BetterBoard instance, Player player) {
         this.instance = instance;
@@ -29,48 +29,34 @@ public class Board extends BukkitRunnable {
         }
     }
 
-    private static FastBoard createBoard(Player player) {
-        return new FastBoard(player) {
-            @Override
-            protected boolean hasLinesMaxLength() {
-                if (super.hasLinesMaxLength()) {
-                    return true;
-                } else if (Bukkit.getPluginManager().isPluginEnabled("ViaVersion")) {
-                    // noinspection unchecked
-                    return com.viaversion.viaversion.api.Via.getAPI().getPlayerVersion(getPlayer()) < com.viaversion.viaversion.api.protocol.version.ProtocolVersion.v1_13.getVersion();
-                } else if (Bukkit.getPluginManager().isPluginEnabled("ProtocolSupport")) {
-                    return protocolsupport.api.ProtocolSupportAPI.getProtocolVersion(getPlayer()).isBefore(protocolsupport.api.ProtocolVersion.MINECRAFT_1_13);
-                }
-                return false;
-            }
-        };
-    }
-
     @Override
     public synchronized void cancel() {
         super.cancel();
-        if (fastBoard != null && !fastBoard.isDeleted()) {
-            fastBoard.delete();
-            fastBoard = null;
-        }
+        Optional.ofNullable(currentProcess.getAndSet(null)).ifPresent(BoardProcess::stop);
     }
 
     @Override
     public void run() {
-        Optional<BoardFrame> optional = instance.getBoardProviderManager().getProvider(player).flatMap(boardProvider -> boardProvider.fetch(player));
+        Optional<BoardProvider> optional = instance.getBoardProviderManager().getProvider(player);
         try {
+            BoardProcess process = currentProcess.get();
             if (optional.isPresent()) {
-                BoardFrame frame = optional.get();
-                if (fastBoard == null || fastBoard.isDeleted()) {
-                    fastBoard = createBoard(player);
+                BoardProvider provider = optional.get();
+                if (process != null) {
+                    if (process.getProvider() == provider) {
+                        process.update();
+                        return;
+                    } else {
+                        process.stop();
+                    }
                 }
-                fastBoard.updateTitle(frame.getTitle());
-                fastBoard.updateLines(frame.getLines());
-            } else if (fastBoard != null) {
-                if (!fastBoard.isDeleted()) {
-                    fastBoard.delete();
-                }
-                fastBoard = null;
+                process = provider.createProcess(player);
+                process.init();
+                currentProcess.set(process);
+            } else {
+                if (process == null) return;
+                process.stop();
+                currentProcess.set(null);
             }
         } catch (RuntimeException ignored) {
             // IGNORED

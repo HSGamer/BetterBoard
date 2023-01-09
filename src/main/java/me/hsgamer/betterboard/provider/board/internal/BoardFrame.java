@@ -1,4 +1,4 @@
-package me.hsgamer.betterboard.api;
+package me.hsgamer.betterboard.provider.board.internal;
 
 import java.util.List;
 

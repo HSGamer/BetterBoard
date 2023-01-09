@@ -1,4 +1,4 @@
-package me.hsgamer.betterboard.provider;
+package me.hsgamer.betterboard.provider.condition;
 
 import me.hsgamer.betterboard.api.condition.Condition;
 import me.hsgamer.betterboard.builder.ConditionBuilder;
