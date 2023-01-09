@@ -27,7 +27,7 @@ public abstract class FastBoardProvider implements ConfigurableBoardProvider {
 
     @Override
     public void loadFromConfig(Config config) {
-        this.conditionProvider.loadFromMap(config.getNormalizedValues("condition", false));
+        this.conditionProvider.loadFromObject(config.getNormalized("condition", ""));
     }
 
     @Override
