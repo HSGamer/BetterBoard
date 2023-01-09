@@ -30,6 +30,8 @@ public final class BetterBoard extends BasePlugin {
 
     @Override
     public void enable() {
+        Permissions.register();
+
         if (PlaceholderAPIHook.setupPlugin()) {
             VariableManager.addExternalReplacer(new ExternalStringReplacer() {
                 @Override
@@ -50,7 +52,7 @@ public final class BetterBoard extends BasePlugin {
 
         registerCommand(new ReloadCommand(this));
 
-        if (MainConfig.METRICS.getValue()) {
+        if (Boolean.TRUE.equals(MainConfig.METRICS.getValue())) {
             new Metrics(this, 12861);
         }
     }
@@ -62,6 +64,7 @@ public final class BetterBoard extends BasePlugin {
 
     @Override
     public void disable() {
+        Permissions.unregister();
         playerBoardManager.clearAll();
         boardProviderManager.clearAll();
         PluginVariableManager.unregisterAll();
