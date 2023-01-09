@@ -17,7 +17,7 @@ public class BoardProviderBuilder extends Builder<Config, BoardProvider> {
         register(AnimatedBoardProvider.class, "animated", "animate", "animation");
     }
 
-    public void register(Class<? extends ConfigurableBoardProvider> clazz, String name, String... aliases) {
+    public void register(Class<? extends ConfigurableBoardProvider> clazz, String... name) {
         register(config -> {
             try {
                 ConfigurableBoardProvider provider = clazz.newInstance();
@@ -27,7 +27,7 @@ public class BoardProviderBuilder extends Builder<Config, BoardProvider> {
                 e.printStackTrace();
                 return null;
             }
-        }, name, aliases);
+        }, name);
     }
 
     public Optional<BoardProvider> build(Config config) {

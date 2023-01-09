@@ -18,7 +18,7 @@ public class ConditionBuilder extends Builder<Object, Condition> {
         register(PermissionCondition.class, "permission", "perms", "perm", "permissions");
     }
 
-    public void register(Class<? extends ConfigurableCondition> clazz, String name, String... aliases) {
+    public void register(Class<? extends ConfigurableCondition> clazz, String... name) {
         register(object -> {
             try {
                 ConfigurableCondition condition = clazz.newInstance();
@@ -28,6 +28,6 @@ public class ConditionBuilder extends Builder<Object, Condition> {
                 e.printStackTrace();
                 return null;
             }
-        }, name, aliases);
+        }, name);
     }
 }
