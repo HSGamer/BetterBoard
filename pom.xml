@@ -59,7 +59,7 @@
                                     <shadedPattern>me.hsgamer.betterboard.lib.board</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>com.udojava.evalex</pattern>
+                                    <pattern>com.ezylang.evalex</pattern>
                                     <shadedPattern>me.hsgamer.betterboard.lib.evalex</shadedPattern>
                                 </relocation>
                                 <relocation>

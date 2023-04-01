@@ -9,12 +9,9 @@ import me.hsgamer.betterboard.manager.PlayerBoardManager;
 import me.hsgamer.betterboard.manager.PluginVariableManager;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
-import me.hsgamer.hscore.variable.ExternalStringReplacer;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-
-import java.util.UUID;
 
 public final class BetterBoard extends BasePlugin {
     private final MainConfig mainConfig = new MainConfig(this);
@@ -33,17 +30,7 @@ public final class BetterBoard extends BasePlugin {
         Permissions.register();
 
         if (PlaceholderAPIHook.setupPlugin()) {
-            VariableManager.addExternalReplacer(new ExternalStringReplacer() {
-                @Override
-                public String replace(String original, UUID uuid) {
-                    return PlaceholderAPIHook.setPlaceholders(original, Bukkit.getOfflinePlayer(uuid));
-                }
-
-                @Override
-                public boolean canBeReplaced(String original) {
-                    return PlaceholderAPIHook.hasPlaceholders(original);
-                }
-            });
+            VariableManager.addExternalReplacer((original, uuid) -> PlaceholderAPIHook.setPlaceholders(original, Bukkit.getOfflinePlayer(uuid)));
             getLogger().info("Hooked into PlaceholderAPI");
         }
         PluginVariableManager.registerDefaultVariables();
