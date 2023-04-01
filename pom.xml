@@ -12,7 +12,7 @@
     <name>BetterBoard</name>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <core.version>4.2.17</core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
