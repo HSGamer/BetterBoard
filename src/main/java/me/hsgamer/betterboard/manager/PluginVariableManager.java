@@ -1,5 +1,7 @@
 package me.hsgamer.betterboard.manager;
 
+import com.ezylang.evalex.data.EvaluationValue;
+import me.hsgamer.betterboard.util.ExpressionUtil;
 import me.hsgamer.hscore.bukkit.utils.BukkitUtils;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.common.interfaces.StringReplacer;
@@ -123,7 +125,7 @@ public class PluginVariableManager {
         });
 
         // Condition
-        register("condition_", (original, uuid) -> Optional.ofNullable(ExpressionUtils.getResult(original)).map(BigDecimal::toString).orElse(null));
+        register("condition_", (original, uuid) -> ExpressionUtil.getResult(original).map(EvaluationValue::getNumberValue).map(BigDecimal::toString).orElse(null));
 
         // UUID
         register("uuid", (original, uuid) -> uuid.toString());
