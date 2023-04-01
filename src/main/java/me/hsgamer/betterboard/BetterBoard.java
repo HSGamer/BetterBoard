@@ -39,9 +39,7 @@ public final class BetterBoard extends BasePlugin {
 
         registerCommand(new ReloadCommand(this));
 
-        if (Boolean.TRUE.equals(MainConfig.METRICS.getValue())) {
-            new Metrics(this, 12861);
-        }
+        new Metrics(this, 12861);
     }
 
     @Override
