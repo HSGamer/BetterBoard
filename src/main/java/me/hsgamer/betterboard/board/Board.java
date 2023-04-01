@@ -24,7 +24,7 @@ public class Board implements Runnable {
         long update = MainConfig.UPDATE_TICKS.getValue();
         boolean async = MainConfig.UPDATE_ASYNC.getValue();
         update = Math.max(update, 0);
-        task = Scheduler.CURRENT.runTaskTimer(instance, this, update, update, async);
+        task = Scheduler.CURRENT.runEntityTaskTimer(instance, player, this, update, update, async);
     }
 
     public void cancel() {
