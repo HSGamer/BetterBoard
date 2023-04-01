@@ -4,16 +4,18 @@ import me.hsgamer.betterboard.BetterBoard;
 import me.hsgamer.betterboard.api.provider.BoardProcess;
 import me.hsgamer.betterboard.api.provider.BoardProvider;
 import me.hsgamer.betterboard.config.MainConfig;
+import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
+import me.hsgamer.hscore.bukkit.scheduler.Task;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Board extends BukkitRunnable {
+public class Board implements Runnable {
     private final Player player;
     private final BetterBoard instance;
     private final AtomicReference<BoardProcess> currentProcess = new AtomicReference<>();
+    private final Task task;
 
     public Board(BetterBoard instance, Player player) {
         this.instance = instance;
@@ -22,16 +24,11 @@ public class Board extends BukkitRunnable {
         long update = MainConfig.UPDATE_TICKS.getValue();
         boolean async = MainConfig.UPDATE_ASYNC.getValue();
         update = Math.max(update, 0);
-        if (async) {
-            runTaskTimerAsynchronously(instance, update, update);
-        } else {
-            runTaskTimer(instance, update, update);
-        }
+        task = Scheduler.CURRENT.runTaskTimer(instance, this, update, update, async);
     }
 
-    @Override
-    public synchronized void cancel() {
-        super.cancel();
+    public void cancel() {
+        task.cancel();
         Optional.ofNullable(currentProcess.getAndSet(null)).ifPresent(BoardProcess::stop);
     }
 

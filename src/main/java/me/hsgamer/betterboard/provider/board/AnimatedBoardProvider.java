@@ -1,14 +1,14 @@
 package me.hsgamer.betterboard.provider.board;
 
 import me.hsgamer.betterboard.provider.board.internal.BoardFrame;
+import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
+import me.hsgamer.hscore.bukkit.scheduler.Task;
 import me.hsgamer.hscore.bukkit.utils.ColorUtils;
-import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +50,7 @@ public class AnimatedBoardProvider extends FastBoardProvider {
     @Override
     public void clear() {
         super.clear();
-        this.lines.forEach(BukkitRunnable::cancel);
+        this.lines.forEach(AnimatedString::cancel);
         this.lines.clear();
         if (title != null) {
             title.cancel();
@@ -86,20 +86,17 @@ public class AnimatedBoardProvider extends FastBoardProvider {
         }
     }
 
-    private static class AnimatedString extends BukkitRunnable {
+    private static class AnimatedString implements Runnable {
         private final List<String> list;
         private final boolean isSchedule;
         private int index = 0;
+        private Task task;
 
         private AnimatedString(List<String> list, long update, boolean async) {
             this.list = list;
             this.isSchedule = update >= 0;
             if (isSchedule) {
-                if (async) {
-                    runTaskTimerAsynchronously(JavaPlugin.getProvidingPlugin(getClass()), update, update);
-                } else {
-                    runTaskTimer(JavaPlugin.getProvidingPlugin(getClass()), update, update);
-                }
+                task = Scheduler.CURRENT.runTaskTimer(JavaPlugin.getProvidingPlugin(getClass()), this, update, update, async);
             }
         }
 
@@ -108,10 +105,9 @@ public class AnimatedBoardProvider extends FastBoardProvider {
             this.index = (index + 1) % list.size();
         }
 
-        @Override
-        public synchronized void cancel() throws IllegalStateException {
-            if (isSchedule) {
-                super.cancel();
+        public void cancel() throws IllegalStateException {
+            if (task != null && !task.isCancelled()) {
+                task.cancel();
             }
         }
 

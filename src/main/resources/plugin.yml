@@ -7,3 +7,4 @@ softdepend:
   - ViaVersion
   - ProtocolSupport
 authors: [ HSGamer ]
+folia-supported: true
