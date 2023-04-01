@@ -133,56 +133,47 @@
             <groupId>me.hsgamer</groupId>
             <artifactId>hscore-bukkit-baseplugin</artifactId>
             <version>${core.version}</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.hsgamer</groupId>
             <artifactId>hscore-builder</artifactId>
             <version>${core.version}</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.hsgamer</groupId>
             <artifactId>hscore-common</artifactId>
             <version>${core.version}</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.hsgamer</groupId>
             <artifactId>hscore-bukkit-config</artifactId>
             <version>${core.version}</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.hsgamer</groupId>
             <artifactId>hscore-bukkit-utils</artifactId>
             <version>${core.version}</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.hsgamer</groupId>
             <artifactId>hscore-config-path</artifactId>
             <version>${core.version}</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.hsgamer</groupId>
             <artifactId>hscore-expression</artifactId>
             <version>${core.version}</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.hsgamer</groupId>
             <artifactId>hscore-variable</artifactId>
             <version>${core.version}</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>fr.mrmicky</groupId>
             <artifactId>fastboard</artifactId>
             <version>1.2.1</version>
             <scope>compile</scope>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
@@ -207,7 +198,6 @@
             <artifactId>bstats-bukkit</artifactId>
             <version>3.0.0</version>
             <scope>compile</scope>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>
