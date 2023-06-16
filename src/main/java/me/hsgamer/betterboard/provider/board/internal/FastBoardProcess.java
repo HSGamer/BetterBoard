@@ -28,8 +28,6 @@ public class FastBoardProcess implements BoardProcess {
                 } else if (Bukkit.getPluginManager().isPluginEnabled("ViaVersion")) {
                     // noinspection unchecked
                     return com.viaversion.viaversion.api.Via.getAPI().getPlayerVersion(getPlayer()) < com.viaversion.viaversion.api.protocol.version.ProtocolVersion.v1_13.getVersion();
-                } else if (Bukkit.getPluginManager().isPluginEnabled("ProtocolSupport")) {
-                    return protocolsupport.api.ProtocolSupportAPI.getProtocolVersion(getPlayer()).isBefore(protocolsupport.api.ProtocolVersion.MINECRAFT_1_13);
                 }
                 return false;
             }

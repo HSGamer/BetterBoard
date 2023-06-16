@@ -5,6 +5,5 @@ api-version: 1.13
 softdepend:
   - PlaceholderAPI
   - ViaVersion
-  - ProtocolSupport
 authors: [ HSGamer ]
 folia-supported: true
