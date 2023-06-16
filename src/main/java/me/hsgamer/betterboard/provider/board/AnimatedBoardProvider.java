@@ -38,7 +38,7 @@ public class AnimatedBoardProvider extends FastBoardProvider {
     @Override
     public void loadFromConfig(Config config) {
         super.loadFromConfig(config);
-        this.title = loadAnimatedString(config.getNormalizedValues(FastBoardProvider.TITLE_PATH, false)).orElse(null);
+        this.title = loadAnimatedString(config.getNormalized(FastBoardProvider.TITLE_PATH, false)).orElse(null);
         List<?> list = config.getInstance(FastBoardProvider.LINES_PATH, Collections.emptyList(), List.class);
         this.lines.addAll(list.stream().flatMap(o -> loadAnimatedString(o).stream()).collect(Collectors.toList()));
     }
