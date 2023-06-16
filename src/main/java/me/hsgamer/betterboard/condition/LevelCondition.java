@@ -12,7 +12,7 @@ public class LevelCondition implements ConfigurableCondition {
     private String value = "0";
 
     public Integer getParsedValue(Player player) {
-        String parsed = VariableManager.setVariables(String.valueOf(value).trim(), player.getUniqueId());
+        String parsed = VariableManager.GLOBAL.setVariables(String.valueOf(value).trim(), player.getUniqueId());
         return ExpressionUtil.getResult(parsed).map(EvaluationValue::getNumberValue).map(BigDecimal::intValue).orElse(0);
     }
 

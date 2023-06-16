@@ -15,7 +15,7 @@ public class ExpressionCondition implements ConfigurableCondition {
     @Override
     public boolean check(Player player) {
         return list.parallelStream()
-                .map(s -> VariableManager.setVariables(s, player.getUniqueId()))
+                .map(s -> VariableManager.GLOBAL.setVariables(s, player.getUniqueId()))
                 .noneMatch(s -> ExpressionUtil.getResult(s).map(evaluationValue -> !evaluationValue.getBooleanValue()).orElse(true));
     }
 

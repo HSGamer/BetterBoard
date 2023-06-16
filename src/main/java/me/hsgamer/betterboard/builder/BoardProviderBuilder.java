@@ -6,10 +6,13 @@ import me.hsgamer.betterboard.provider.board.AnimatedBoardProvider;
 import me.hsgamer.betterboard.provider.board.SimpleBoardProvider;
 import me.hsgamer.hscore.builder.Builder;
 import me.hsgamer.hscore.config.Config;
+import me.hsgamer.hscore.config.PathString;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class BoardProviderBuilder extends Builder<Config, BoardProvider> {
+    private static final PathString TYPE_PATH = new PathString("type");
     public static final BoardProviderBuilder INSTANCE = new BoardProviderBuilder();
 
     private BoardProviderBuilder() {
@@ -20,7 +23,7 @@ public class BoardProviderBuilder extends Builder<Config, BoardProvider> {
     public void register(Class<? extends ConfigurableBoardProvider> clazz, String... name) {
         register(config -> {
             try {
-                ConfigurableBoardProvider provider = clazz.newInstance();
+                ConfigurableBoardProvider provider = clazz.getDeclaredConstructor().newInstance();
                 provider.loadFromConfig(config);
                 return provider;
             } catch (Exception e) {
@@ -31,8 +34,8 @@ public class BoardProviderBuilder extends Builder<Config, BoardProvider> {
     }
 
     public Optional<BoardProvider> build(Config config) {
-        if (config.contains("type")) {
-            String type = config.getInstance("type", String.class);
+        if (config.contains(TYPE_PATH)) {
+            String type = Objects.toString(config.getNormalized(TYPE_PATH));
             return build(type, config);
         } else {
             return build("simple", config);

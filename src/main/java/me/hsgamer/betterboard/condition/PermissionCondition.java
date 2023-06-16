@@ -14,7 +14,7 @@ public class PermissionCondition implements ConfigurableCondition {
     @Override
     public boolean check(Player player) {
         return list.stream()
-                .map(s -> VariableManager.setVariables(s, player.getUniqueId()))
+                .map(s -> VariableManager.GLOBAL.setVariables(s, player.getUniqueId()))
                 .allMatch(s -> hasPermission(player, s));
     }
 

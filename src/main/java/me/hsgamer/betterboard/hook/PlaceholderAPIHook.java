@@ -11,14 +11,7 @@ public class PlaceholderAPIHook {
     }
 
     public static boolean setupPlugin() {
-        if (!Bukkit.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            return false;
-        }
-        return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
-    }
-
-    public static boolean hasPlaceholders(String message) {
-        return PlaceholderAPI.containsPlaceholders(message);
+        return Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
     }
 
     public static String setPlaceholders(String message, OfflinePlayer executor) {

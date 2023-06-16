@@ -8,7 +8,6 @@ import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class AnimatedBoardProvider extends FastBoardProvider {
     private final List<AnimatedString> lines = new CopyOnWriteArrayList<>();
@@ -26,12 +24,12 @@ public class AnimatedBoardProvider extends FastBoardProvider {
     public Optional<BoardFrame> fetch(Player player) {
         String fetchedTitle = Optional.ofNullable(title)
                 .map(AnimatedString::getString)
-                .map(s -> VariableManager.setVariables(s, player.getUniqueId()))
+                .map(s -> VariableManager.GLOBAL.setVariables(s, player.getUniqueId()))
                 .map(ColorUtils::colorize)
                 .orElse("");
         List<String> fetchedLines = lines.stream()
                 .map(AnimatedString::getString)
-                .map(s -> VariableManager.setVariables(s, player.getUniqueId()))
+                .map(s -> VariableManager.GLOBAL.setVariables(s, player.getUniqueId()))
                 .map(ColorUtils::colorize)
                 .collect(Collectors.toList());
         return Optional.of(new BoardFrame(fetchedTitle, fetchedLines));
@@ -40,11 +38,9 @@ public class AnimatedBoardProvider extends FastBoardProvider {
     @Override
     public void loadFromConfig(Config config) {
         super.loadFromConfig(config);
-        this.title = loadAnimatedString(config.getNormalizedValues("title", false)).orElse(null);
-        List<?> list = config.getInstance("lines", Collections.emptyList(), List.class);
-        this.lines.addAll(
-                list.stream().flatMap(o -> loadAnimatedString(o).map(Stream::of).orElse(Stream.empty())).collect(Collectors.toList())
-        );
+        this.title = loadAnimatedString(config.getNormalizedValues(FastBoardProvider.TITLE_PATH, false)).orElse(null);
+        List<?> list = config.getInstance(FastBoardProvider.LINES_PATH, Collections.emptyList(), List.class);
+        this.lines.addAll(list.stream().flatMap(o -> loadAnimatedString(o).stream()).collect(Collectors.toList()));
     }
 
     @Override
@@ -88,15 +84,14 @@ public class AnimatedBoardProvider extends FastBoardProvider {
 
     private static class AnimatedString implements Runnable {
         private final List<String> list;
-        private final boolean isSchedule;
         private int index = 0;
         private Task task;
 
         private AnimatedString(List<String> list, long update, boolean async) {
             this.list = list;
-            this.isSchedule = update >= 0;
+            boolean isSchedule = update >= 0;
             if (isSchedule) {
-                task = Scheduler.CURRENT.runTaskTimer(JavaPlugin.getProvidingPlugin(getClass()), this, update, update, async);
+                task = Scheduler.providingPlugin(getClass()).runner(async).runTaskTimer(this, update, update);
             }
         }
 

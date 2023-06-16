@@ -21,7 +21,7 @@ public class ConditionBuilder extends Builder<Object, Condition> {
     public void register(Class<? extends ConfigurableCondition> clazz, String... name) {
         register(object -> {
             try {
-                ConfigurableCondition condition = clazz.newInstance();
+                ConfigurableCondition condition = clazz.getDeclaredConstructor().newInstance();
                 condition.loadFromObject(object);
                 return condition;
             } catch (Exception e) {
