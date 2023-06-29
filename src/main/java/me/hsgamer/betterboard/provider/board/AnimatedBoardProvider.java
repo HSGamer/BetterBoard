@@ -3,7 +3,6 @@ package me.hsgamer.betterboard.provider.board;
 import me.hsgamer.betterboard.provider.board.internal.BoardFrame;
 import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.bukkit.scheduler.Task;
-import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.variable.VariableManager;
@@ -25,12 +24,10 @@ public class AnimatedBoardProvider extends FastBoardProvider {
         String fetchedTitle = Optional.ofNullable(title)
                 .map(AnimatedString::getString)
                 .map(s -> VariableManager.GLOBAL.setVariables(s, player.getUniqueId()))
-                .map(ColorUtils::colorize)
                 .orElse("");
         List<String> fetchedLines = lines.stream()
                 .map(AnimatedString::getString)
                 .map(s -> VariableManager.GLOBAL.setVariables(s, player.getUniqueId()))
-                .map(ColorUtils::colorize)
                 .collect(Collectors.toList());
         return Optional.of(new BoardFrame(fetchedTitle, fetchedLines));
     }

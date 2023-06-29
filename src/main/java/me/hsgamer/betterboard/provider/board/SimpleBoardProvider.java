@@ -1,7 +1,6 @@
 package me.hsgamer.betterboard.provider.board;
 
 import me.hsgamer.betterboard.provider.board.internal.BoardFrame;
-import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.variable.VariableManager;
@@ -26,11 +25,8 @@ public class SimpleBoardProvider extends FastBoardProvider {
     @Override
     public Optional<BoardFrame> fetch(Player player) {
         return Optional.of(new BoardFrame(
-                ColorUtils.colorize(VariableManager.GLOBAL.setVariables(title, player.getUniqueId())),
-                lines.stream()
-                        .map(s -> VariableManager.GLOBAL.setVariables(s, player.getUniqueId()))
-                        .map(ColorUtils::colorize)
-                        .collect(Collectors.toList())
+                VariableManager.GLOBAL.setVariables(title, player.getUniqueId()),
+                lines.stream().map(s -> VariableManager.GLOBAL.setVariables(s, player.getUniqueId())).collect(Collectors.toList())
         ));
     }
 
