@@ -2,6 +2,7 @@ package me.hsgamer.betterboard.provider.board.internal;
 
 import me.hsgamer.betterboard.api.provider.BoardProcess;
 import me.hsgamer.betterboard.api.provider.BoardProvider;
+import me.hsgamer.betterboard.hook.MiniPlaceholdersHook;
 import me.hsgamer.betterboard.provider.board.FastBoardProvider;
 import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import org.bukkit.Bukkit;
@@ -49,10 +50,12 @@ public class FastBoardProcess implements BoardProcess {
             if (MINIMESSAGE_SUPPORT && provider.isUseMiniMessage()) {
                 return new FastBoardOperator() {
                     private final fr.mrmicky.fastboard.adventure.FastBoard fastBoard = new fr.mrmicky.fastboard.adventure.FastBoard(player);
-                    private final net.kyori.adventure.text.minimessage.MiniMessage miniMessage = net.kyori.adventure.text.minimessage.MiniMessage.miniMessage();
 
                     private net.kyori.adventure.text.Component toComponent(String text) {
-                        return miniMessage.deserialize(text);
+                        if (MiniPlaceholdersHook.isAvailable()) {
+                            return MiniPlaceholdersHook.toMiniComponent(player, text);
+                        }
+                        return net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(text);
                     }
 
                     @Override

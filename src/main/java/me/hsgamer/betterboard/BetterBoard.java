@@ -38,7 +38,7 @@ public final class BetterBoard extends BasePlugin {
     public void enable() {
         Permissions.register();
 
-        if (PlaceholderAPIHook.setupPlugin()) {
+        if (PlaceholderAPIHook.isAvailable()) {
             VariableManager.GLOBAL.addExternalReplacer(StringReplacer.of((original, uuid) -> PlaceholderAPIHook.setPlaceholders(original, Bukkit.getOfflinePlayer(uuid))));
             getLogger().info("Hooked into PlaceholderAPI");
         }

@@ -4,6 +4,7 @@ main: me.hsgamer.betterboard.BetterBoard
 api-version: 1.13
 softdepend:
   - PlaceholderAPI
+  - MiniPlaceholders
   - ViaVersion
 authors: [ HSGamer ]
 folia-supported: true
