@@ -126,14 +126,18 @@ public class FastBoardProcess implements BoardProcess {
                     }
                 };
 
+                private String replace(String text) {
+                    return ColorUtils.colorize(text);
+                }
+
                 @Override
                 public void updateTitle(String title) {
-                    fastBoard.updateTitle(ColorUtils.colorize(title));
+                    fastBoard.updateTitle(replace(title));
                 }
 
                 @Override
                 public void updateLines(List<String> lines) {
-                    fastBoard.updateLines(lines.stream().map(ColorUtils::colorize).collect(Collectors.toList()));
+                    fastBoard.updateLines(lines.stream().map(this::replace).collect(Collectors.toList()));
                 }
 
                 @Override
