@@ -49,17 +49,20 @@ public class FastBoardProcess implements BoardProcess {
             if (MINIMESSAGE_SUPPORT && provider.isUseMiniMessage()) {
                 return new FastBoardOperator() {
                     private final fr.mrmicky.fastboard.adventure.FastBoard fastBoard = new fr.mrmicky.fastboard.adventure.FastBoard(player);
+                    private final net.kyori.adventure.text.minimessage.MiniMessage miniMessage = net.kyori.adventure.text.minimessage.MiniMessage.miniMessage();
+
+                    private net.kyori.adventure.text.Component toComponent(String text) {
+                        return miniMessage.deserialize(text);
+                    }
 
                     @Override
                     public void updateTitle(String title) {
-                        fastBoard.updateTitle(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(title));
+                        fastBoard.updateTitle(toComponent(title));
                     }
 
                     @Override
                     public void updateLines(List<String> lines) {
-                        fastBoard.updateLines(lines.stream()
-                                .map(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()::deserialize)
-                                .collect(Collectors.toList()));
+                        fastBoard.updateLines(lines.stream().map(this::toComponent).collect(Collectors.toList()));
                     }
 
                     @Override
