@@ -14,8 +14,10 @@ import java.util.Optional;
 public abstract class FastBoardProvider implements ConfigurableBoardProvider {
     public static final PathString TITLE_PATH = new PathString("title");
     public static final PathString LINES_PATH = new PathString("lines");
+    private static final PathString USE_MINIMESSAGE_PATH = new PathString("use-minimessage");
 
     private final ConditionProvider conditionProvider = new ConditionProvider();
+    private boolean useMiniMessage = false;
 
     public abstract Optional<BoardFrame> fetch(Player player);
 
@@ -32,10 +34,18 @@ public abstract class FastBoardProvider implements ConfigurableBoardProvider {
     @Override
     public void loadFromConfig(Config config) {
         this.conditionProvider.loadFromObject(config.getNormalized(ConditionProvider.PATH, ""));
+        this.useMiniMessage = Optional.ofNullable(config.getNormalized(USE_MINIMESSAGE_PATH, false))
+                .map(Object::toString)
+                .map(Boolean::parseBoolean)
+                .orElse(false);
     }
 
     @Override
     public BoardProcess createProcess(Player player) {
         return new FastBoardProcess(player, this);
+    }
+
+    public boolean isUseMiniMessage() {
+        return useMiniMessage;
     }
 }

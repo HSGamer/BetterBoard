@@ -1,44 +1,109 @@
 package me.hsgamer.betterboard.provider.board.internal;
 
-import fr.mrmicky.fastboard.FastBoard;
 import me.hsgamer.betterboard.api.provider.BoardProcess;
 import me.hsgamer.betterboard.api.provider.BoardProvider;
 import me.hsgamer.betterboard.provider.board.FastBoardProvider;
+import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class FastBoardProcess implements BoardProcess {
+    private static final boolean MINIMESSAGE_SUPPORT;
+
+    static {
+        boolean minimeessageSupport = false;
+        try {
+            Class.forName("net.kyori.adventure.text.minimessage.MiniMessage");
+            minimeessageSupport = true;
+        } catch (ClassNotFoundException ignored) {
+            // IGNORED
+        }
+        MINIMESSAGE_SUPPORT = minimeessageSupport;
+    }
+
     private final Player player;
     private final FastBoardProvider provider;
-    private FastBoard fastBoard;
+    private FastBoardOperator operator;
 
     public FastBoardProcess(Player player, FastBoardProvider provider) {
         this.player = player;
         this.provider = provider;
     }
 
-    private static FastBoard createBoard(Player player) {
-        return new FastBoard(player) {
-            @Override
-            protected boolean hasLinesMaxLength() {
-                if (super.hasLinesMaxLength()) {
-                    return true;
-                } else if (Bukkit.getPluginManager().isPluginEnabled("ViaVersion")) {
-                    // noinspection unchecked
-                    return com.viaversion.viaversion.api.Via.getAPI().getPlayerVersion(getPlayer()) < com.viaversion.viaversion.api.protocol.version.ProtocolVersion.v1_13.getVersion();
+    private FastBoardOperator createOperator(Player player) {
+        if (MINIMESSAGE_SUPPORT && provider.isUseMiniMessage()) {
+            return new FastBoardOperator() {
+                private final fr.mrmicky.fastboard.adventure.FastBoard fastBoard = new fr.mrmicky.fastboard.adventure.FastBoard(player);
+
+                @Override
+                public void updateTitle(String title) {
+                    fastBoard.updateTitle(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(title));
                 }
-                return false;
-            }
-        };
+
+                @Override
+                public void updateLines(List<String> lines) {
+                    fastBoard.updateLines(lines.stream()
+                            .map(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()::deserialize)
+                            .collect(Collectors.toList()));
+                }
+
+                @Override
+                public boolean isDeleted() {
+                    return fastBoard.isDeleted();
+                }
+
+                @Override
+                public void delete() {
+                    fastBoard.delete();
+                }
+            };
+        } else {
+            return new FastBoardOperator() {
+                private final fr.mrmicky.fastboard.FastBoard fastBoard = new fr.mrmicky.fastboard.FastBoard(player) {
+                    @Override
+                    protected boolean hasLinesMaxLength() {
+                        if (super.hasLinesMaxLength()) {
+                            return true;
+                        } else if (Bukkit.getPluginManager().isPluginEnabled("ViaVersion")) {
+                            // noinspection unchecked
+                            return com.viaversion.viaversion.api.Via.getAPI().getPlayerVersion(getPlayer()) < com.viaversion.viaversion.api.protocol.version.ProtocolVersion.v1_13.getVersion();
+                        }
+                        return false;
+                    }
+                };
+
+                @Override
+                public void updateTitle(String title) {
+                    fastBoard.updateTitle(ColorUtils.colorize(title));
+                }
+
+                @Override
+                public void updateLines(List<String> lines) {
+                    fastBoard.updateLines(lines.stream().map(ColorUtils::colorize).collect(Collectors.toList()));
+                }
+
+                @Override
+                public boolean isDeleted() {
+                    return fastBoard.isDeleted();
+                }
+
+                @Override
+                public void delete() {
+                    fastBoard.delete();
+                }
+            };
+        }
     }
 
     @Override
     public void stop() {
-        if (fastBoard != null && !fastBoard.isDeleted()) {
-            fastBoard.delete();
-            fastBoard = null;
+        if (operator != null && !operator.isDeleted()) {
+            operator.delete();
+            operator = null;
         }
     }
 
@@ -53,19 +118,29 @@ public class FastBoardProcess implements BoardProcess {
         try {
             if (optional.isPresent()) {
                 BoardFrame frame = optional.get();
-                if (fastBoard == null || fastBoard.isDeleted()) {
-                    fastBoard = createBoard(player);
+                if (operator == null || operator.isDeleted()) {
+                    operator = createOperator(player);
                 }
-                fastBoard.updateTitle(frame.getTitle());
-                fastBoard.updateLines(frame.getLines());
-            } else if (fastBoard != null) {
-                if (!fastBoard.isDeleted()) {
-                    fastBoard.delete();
+                operator.updateTitle(frame.getTitle());
+                operator.updateLines(frame.getLines());
+            } else if (operator != null) {
+                if (!operator.isDeleted()) {
+                    operator.delete();
                 }
-                fastBoard = null;
+                operator = null;
             }
         } catch (RuntimeException ignored) {
             // IGNORED
         }
+    }
+
+    private interface FastBoardOperator {
+        void updateTitle(String title);
+
+        void updateLines(List<String> lines);
+
+        boolean isDeleted();
+
+        void delete();
     }
 }
