@@ -2,6 +2,7 @@ package me.hsgamer.betterboard;
 
 import com.ezylang.evalex.data.EvaluationValue;
 import me.hsgamer.betterboard.command.ReloadCommand;
+import me.hsgamer.betterboard.command.ToggleCommand;
 import me.hsgamer.betterboard.config.MainConfig;
 import me.hsgamer.betterboard.hook.PlaceholderAPIHook;
 import me.hsgamer.betterboard.listener.PlayerListener;
@@ -50,6 +51,7 @@ public final class BetterBoard extends BasePlugin {
         registerListener(new PlayerListener(this));
 
         registerCommand(new ReloadCommand(this));
+        registerCommand(new ToggleCommand(this));
 
         new Metrics(this, 12861);
     }
