@@ -5,11 +5,13 @@ import me.hsgamer.betterboard.api.provider.BoardProvider;
 import me.hsgamer.betterboard.hook.MiniPlaceholdersHook;
 import me.hsgamer.betterboard.provider.board.FastBoardProvider;
 import me.hsgamer.hscore.bukkit.utils.ColorUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FastBoardProcess implements BoardProcess {
@@ -47,70 +49,45 @@ public class FastBoardProcess implements BoardProcess {
 
     private FastBoardOperator createOperator(Player player) {
         if (ADVENTURE_SUPPORT) {
+            Function<String, Component> componentFunction;
             if (MINIMESSAGE_SUPPORT && provider.isUseMiniMessage()) {
-                return new FastBoardOperator() {
-                    private final fr.mrmicky.fastboard.adventure.FastBoard fastBoard = new fr.mrmicky.fastboard.adventure.FastBoard(player);
-
-                    private net.kyori.adventure.text.Component toComponent(String text) {
-                        if (MiniPlaceholdersHook.isAvailable()) {
-                            return MiniPlaceholdersHook.toMiniComponent(player, text);
-                        }
-                        return net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(text);
+                componentFunction = text -> {
+                    if (MiniPlaceholdersHook.isAvailable()) {
+                        return MiniPlaceholdersHook.toMiniComponent(player, text);
                     }
-
-                    @Override
-                    public void updateTitle(String title) {
-                        fastBoard.updateTitle(toComponent(title));
-                    }
-
-                    @Override
-                    public void updateLines(List<String> lines) {
-                        fastBoard.updateLines(lines.stream().map(this::toComponent).collect(Collectors.toList()));
-                    }
-
-                    @Override
-                    public boolean isDeleted() {
-                        return fastBoard.isDeleted();
-                    }
-
-                    @Override
-                    public void delete() {
-                        fastBoard.delete();
-                    }
+                    return net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(text);
                 };
             } else {
-                return new FastBoardOperator() {
-                    private final fr.mrmicky.fastboard.adventure.FastBoard fastBoard = new fr.mrmicky.fastboard.adventure.FastBoard(player);
-                    private final net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer serializer = net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.builder()
-                            .character(net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.SECTION_CHAR)
-                            .hexColors()
-                            .build();
-
-                    private net.kyori.adventure.text.Component toComponent(String text) {
-                        return serializer.deserialize(ColorUtils.colorize(text));
-                    }
-
-                    @Override
-                    public void updateTitle(String title) {
-                        fastBoard.updateTitle(toComponent(title));
-                    }
-
-                    @Override
-                    public void updateLines(List<String> lines) {
-                        fastBoard.updateLines(lines.stream().map(this::toComponent).collect(Collectors.toList()));
-                    }
-
-                    @Override
-                    public boolean isDeleted() {
-                        return fastBoard.isDeleted();
-                    }
-
-                    @Override
-                    public void delete() {
-                        fastBoard.delete();
-                    }
-                };
+                net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer serializer = net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.builder()
+                        .character(net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.SECTION_CHAR)
+                        .hexColors()
+                        .build();
+                componentFunction = text -> serializer.deserialize(ColorUtils.colorize(text));
             }
+
+            return new FastBoardOperator() {
+                private final fr.mrmicky.fastboard.adventure.FastBoard fastBoard = new fr.mrmicky.fastboard.adventure.FastBoard(player);
+
+                @Override
+                public void updateTitle(String title) {
+                    fastBoard.updateTitle(componentFunction.apply(title));
+                }
+
+                @Override
+                public void updateLines(List<String> lines) {
+                    fastBoard.updateLines(lines.stream().map(componentFunction).collect(Collectors.toList()));
+                }
+
+                @Override
+                public boolean isDeleted() {
+                    return fastBoard.isDeleted();
+                }
+
+                @Override
+                public void delete() {
+                    fastBoard.delete();
+                }
+            };
         } else {
             return new FastBoardOperator() {
                 private final fr.mrmicky.fastboard.FastBoard fastBoard = new fr.mrmicky.fastboard.FastBoard(player) {
