@@ -2,6 +2,7 @@ package me.hsgamer.betterboard;
 
 import com.ezylang.evalex.data.EvaluationValue;
 import me.hsgamer.betterboard.command.ReloadCommand;
+import me.hsgamer.betterboard.command.ToggleCommand;
 import me.hsgamer.betterboard.config.MainConfig;
 import me.hsgamer.betterboard.hook.PlaceholderAPIHook;
 import me.hsgamer.betterboard.listener.PlayerListener;
@@ -39,17 +40,20 @@ public final class BetterBoard extends BasePlugin {
         Permissions.register();
 
         if (PlaceholderAPIHook.isAvailable()) {
-            VariableManager.GLOBAL.addExternalReplacer(StringReplacer.of((original, uuid) -> PlaceholderAPIHook.setPlaceholders(original, Bukkit.getOfflinePlayer(uuid))));
+            VariableManager.GLOBAL.addExternalReplacer(StringReplacer.of(
+                    (original, uuid) -> PlaceholderAPIHook.setPlaceholders(original, Bukkit.getOfflinePlayer(uuid))));
             getLogger().info("Hooked into PlaceholderAPI");
         }
 
         CommonVariableBundle.registerVariables(globalVariableBundle);
         BukkitVariableBundle.registerVariables(globalVariableBundle);
-        globalVariableBundle.register("condition_", StringReplacer.of(original -> ExpressionUtil.getResult(original).map(EvaluationValue::getNumberValue).map(BigDecimal::toString).orElse(null)));
+        globalVariableBundle.register("condition_", StringReplacer.of(original -> ExpressionUtil.getResult(original)
+                .map(EvaluationValue::getNumberValue).map(BigDecimal::toString).orElse(null)));
 
         registerListener(new PlayerListener(this));
 
         registerCommand(new ReloadCommand(this));
+        registerCommand(new ToggleCommand(this));
 
         new Metrics(this, 12861);
     }

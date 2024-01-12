@@ -14,6 +14,10 @@ public class PlayerBoardManager {
         this.instance = instance;
     }
 
+    public boolean hasBoard(Player player) {
+        return boardMap.containsKey(player.getUniqueId());
+    }
+
     public void addBoard(Player player) {
         boardMap.put(player.getUniqueId(), new Board(instance, player));
     }
