@@ -40,15 +40,13 @@ public final class BetterBoard extends BasePlugin {
         Permissions.register();
 
         if (PlaceholderAPIHook.isAvailable()) {
-            VariableManager.GLOBAL.addExternalReplacer(StringReplacer.of(
-                    (original, uuid) -> PlaceholderAPIHook.setPlaceholders(original, Bukkit.getOfflinePlayer(uuid))));
+            VariableManager.GLOBAL.addExternalReplacer(StringReplacer.of((original, uuid) -> PlaceholderAPIHook.setPlaceholders(original, Bukkit.getOfflinePlayer(uuid))));
             getLogger().info("Hooked into PlaceholderAPI");
         }
 
         CommonVariableBundle.registerVariables(globalVariableBundle);
         BukkitVariableBundle.registerVariables(globalVariableBundle);
-        globalVariableBundle.register("condition_", StringReplacer.of(original -> ExpressionUtil.getResult(original)
-                .map(EvaluationValue::getNumberValue).map(BigDecimal::toString).orElse(null)));
+        globalVariableBundle.register("condition_", StringReplacer.of(original -> ExpressionUtil.getResult(original).map(EvaluationValue::getNumberValue).map(BigDecimal::toString).orElse(null)));
 
         registerListener(new PlayerListener(this));
 
