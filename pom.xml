@@ -13,7 +13,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <core.version>4.3.26</core.version>
+        <core.version>4.3.29</core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
