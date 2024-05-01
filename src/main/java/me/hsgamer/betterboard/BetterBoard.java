@@ -33,11 +33,11 @@ public final class BetterBoard extends BasePlugin {
     protected List<Object> getComponents() {
         return List.of(
                 new PostEnableComponent(this),
+                ConfigGenerator.newInstance(MainConfig.class, new BukkitConfig(this)),
 
                 new BoardProviderManager(this),
                 new PlayerBoardManager(this),
 
-                ConfigGenerator.newInstance(MainConfig.class, new BukkitConfig(this)),
                 new CommandComponent(this, new ReloadCommand(this), new ToggleCommand(this)),
                 new PlayerListener(this),
                 new Permissions(this)
