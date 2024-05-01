@@ -2,11 +2,13 @@ package me.hsgamer.betterboard.command;
 
 import me.hsgamer.betterboard.BetterBoard;
 import me.hsgamer.betterboard.Permissions;
+import me.hsgamer.betterboard.config.MainConfig;
+import me.hsgamer.betterboard.manager.BoardProviderManager;
+import me.hsgamer.betterboard.manager.PlayerBoardManager;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -27,13 +29,16 @@ public class ReloadCommand extends Command {
             return false;
         }
 
-        instance.getPlayerBoardManager().clearAll();
-        instance.getBoardProviderManager().clearAll();
-        instance.getMainConfig().reload();
-        instance.getBoardProviderManager().loadProviders();
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            instance.getPlayerBoardManager().addBoard(player);
-        }
+        PlayerBoardManager playerBoardManager = instance.get(PlayerBoardManager.class);
+        BoardProviderManager boardProviderManager = instance.get(BoardProviderManager.class);
+        MainConfig mainConfig = instance.get(MainConfig.class);
+
+        playerBoardManager.clearAll();
+        boardProviderManager.clearAll();
+        mainConfig.reloadConfig();
+        boardProviderManager.loadProviders();
+        Bukkit.getOnlinePlayers().forEach(playerBoardManager::addBoard);
+
         MessageUtils.sendMessage(sender, "&aSuccessfully reloaded");
         return true;
     }

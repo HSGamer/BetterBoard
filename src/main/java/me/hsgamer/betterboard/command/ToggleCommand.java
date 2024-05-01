@@ -2,14 +2,14 @@ package me.hsgamer.betterboard.command;
 
 import me.hsgamer.betterboard.BetterBoard;
 import me.hsgamer.betterboard.Permissions;
+import me.hsgamer.betterboard.manager.PlayerBoardManager;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
-
-import java.util.Collections;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
 
 public class ToggleCommand extends Command {
     private final BetterBoard instance;
@@ -31,11 +31,12 @@ public class ToggleCommand extends Command {
             return false;
         }
         Player player = (Player) sender;
-        if (instance.getPlayerBoardManager().hasBoard(player)) {
-            instance.getPlayerBoardManager().removeBoard(player);
+        PlayerBoardManager playerBoardManager = instance.get(PlayerBoardManager.class);
+        if (playerBoardManager.hasBoard(player)) {
+            playerBoardManager.removeBoard(player);
             MessageUtils.sendMessage(sender, "&aDisabled the board");
         } else {
-            instance.getPlayerBoardManager().addBoard(player);
+            playerBoardManager.addBoard(player);
             MessageUtils.sendMessage(sender, "&aEnabled the board");
         }
         MessageUtils.sendMessage(sender, "&aSuccessfully reloaded");

@@ -1,11 +1,14 @@
 package me.hsgamer.betterboard.board;
 
+import io.github.projectunified.minelib.scheduler.async.AsyncScheduler;
+import io.github.projectunified.minelib.scheduler.common.scheduler.Scheduler;
+import io.github.projectunified.minelib.scheduler.common.task.Task;
+import io.github.projectunified.minelib.scheduler.entity.EntityScheduler;
 import me.hsgamer.betterboard.BetterBoard;
 import me.hsgamer.betterboard.api.provider.BoardProcess;
 import me.hsgamer.betterboard.api.provider.BoardProvider;
 import me.hsgamer.betterboard.config.MainConfig;
-import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
-import me.hsgamer.hscore.bukkit.scheduler.Task;
+import me.hsgamer.betterboard.manager.BoardProviderManager;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
@@ -21,10 +24,11 @@ public class Board implements Runnable {
         this.instance = instance;
         this.player = player;
 
-        long update = MainConfig.UPDATE_TICKS.getValue();
-        boolean async = MainConfig.UPDATE_ASYNC.getValue();
+        long update = instance.get(MainConfig.class).getUpdateTicks();
+        boolean async = instance.get(MainConfig.class).isUpdateAsync();
         update = Math.max(update, 0);
-        task = Scheduler.plugin(instance).runner(async).runEntityTaskTimer(player, this, update, update);
+        Scheduler scheduler = async ? AsyncScheduler.get(instance) : EntityScheduler.get(instance, player);
+        task = scheduler.runTimer(this, update, update);
     }
 
     public void cancel() {
@@ -34,7 +38,7 @@ public class Board implements Runnable {
 
     @Override
     public void run() {
-        Optional<BoardProvider> optional = instance.getBoardProviderManager().getProvider(player);
+        Optional<BoardProvider> optional = instance.get(BoardProviderManager.class).getProvider(player);
         try {
             BoardProcess process = currentProcess.get();
             if (optional.isPresent()) {

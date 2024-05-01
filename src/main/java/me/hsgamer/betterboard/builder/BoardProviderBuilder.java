@@ -12,8 +12,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class BoardProviderBuilder extends Builder<Config, BoardProvider> {
-    private static final PathString TYPE_PATH = new PathString("type");
     public static final BoardProviderBuilder INSTANCE = new BoardProviderBuilder();
+    private static final PathString TYPE_PATH = new PathString("type");
 
     private BoardProviderBuilder() {
         register(SimpleBoardProvider.class, "simple");

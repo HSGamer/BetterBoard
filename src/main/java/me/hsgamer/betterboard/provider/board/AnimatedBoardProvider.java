@@ -1,12 +1,15 @@
 package me.hsgamer.betterboard.provider.board;
 
+import io.github.projectunified.minelib.scheduler.async.AsyncScheduler;
+import io.github.projectunified.minelib.scheduler.common.scheduler.Scheduler;
+import io.github.projectunified.minelib.scheduler.common.task.Task;
+import io.github.projectunified.minelib.scheduler.global.GlobalScheduler;
 import me.hsgamer.betterboard.provider.board.internal.BoardFrame;
-import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
-import me.hsgamer.hscore.bukkit.scheduler.Task;
 import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.config.Config;
 import me.hsgamer.hscore.variable.VariableManager;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
 import java.util.List;
@@ -88,7 +91,9 @@ public class AnimatedBoardProvider extends FastBoardProvider {
             this.list = list;
             boolean isSchedule = update >= 0;
             if (isSchedule) {
-                task = Scheduler.providingPlugin(getClass()).runner(async).runTaskTimer(this, update, update);
+                JavaPlugin plugin = JavaPlugin.getProvidingPlugin(getClass());
+                Scheduler scheduler = async ? AsyncScheduler.get(plugin) : GlobalScheduler.get(plugin);
+                task = scheduler.runTimer(this, update, update);
             }
         }
 

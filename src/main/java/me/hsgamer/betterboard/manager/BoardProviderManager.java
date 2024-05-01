@@ -1,22 +1,24 @@
 package me.hsgamer.betterboard.manager;
 
+import io.github.projectunified.minelib.plugin.base.Loadable;
+import io.github.projectunified.minelib.plugin.postenable.PostEnable;
+import me.hsgamer.betterboard.BetterBoard;
 import me.hsgamer.betterboard.api.provider.BoardProvider;
 import me.hsgamer.betterboard.builder.BoardProviderBuilder;
 import me.hsgamer.betterboard.config.MainConfig;
 import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.config.Config;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class BoardProviderManager {
+public class BoardProviderManager implements PostEnable, Loadable {
     private final List<BoardProvider> providers = new CopyOnWriteArrayList<>();
-    private final Plugin plugin;
+    private final BetterBoard plugin;
 
-    public BoardProviderManager(Plugin plugin) {
+    public BoardProviderManager(BetterBoard plugin) {
         this.plugin = plugin;
     }
 
@@ -30,7 +32,7 @@ public class BoardProviderManager {
         providerConfigs.forEach(Config::setup);
 
         // PRIORITY
-        for (String providerName : MainConfig.PRIORITY_PROVIDERS.getValue()) {
+        for (String providerName : plugin.get(MainConfig.class).getPriorityProviders()) {
             providerConfigs
                     .stream()
                     .filter(config -> config.getName().equals(providerName))
@@ -66,5 +68,15 @@ public class BoardProviderManager {
 
     public Optional<BoardProvider> getProvider(Player player) {
         return providers.stream().filter(boardProvider -> boardProvider.canFetch(player)).findFirst();
+    }
+
+    @Override
+    public void postEnable() {
+        loadProviders();
+    }
+
+    @Override
+    public void disable() {
+        clearAll();
     }
 }
