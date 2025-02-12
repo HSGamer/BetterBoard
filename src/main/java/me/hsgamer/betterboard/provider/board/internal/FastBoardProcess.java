@@ -5,6 +5,7 @@ import me.hsgamer.betterboard.api.provider.BoardProvider;
 import me.hsgamer.betterboard.hook.MiniPlaceholdersHook;
 import me.hsgamer.betterboard.provider.board.FastBoardProvider;
 import me.hsgamer.hscore.bukkit.utils.ColorUtils;
+import me.hsgamer.hscore.common.Pair;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -75,7 +76,10 @@ public class FastBoardProcess implements BoardProcess {
 
                 @Override
                 public void updateLines(List<String> lines) {
-                    fastBoard.updateLines(lines.stream().map(componentFunction).collect(Collectors.toList()));
+                    Pair<List<String>, List<String>> pair = provider.getTextAndScore(lines);
+                    List<Component> textComponents = pair.getKey().stream().map(componentFunction).collect(Collectors.toList());
+                    List<Component> scoreComponents = pair.getValue().stream().map(score -> score == null ? null : componentFunction.apply(score)).collect(Collectors.toList());
+                    fastBoard.updateLines(textComponents, scoreComponents);
                 }
 
                 @Override
@@ -114,7 +118,10 @@ public class FastBoardProcess implements BoardProcess {
 
                 @Override
                 public void updateLines(List<String> lines) {
-                    fastBoard.updateLines(lines.stream().map(this::replace).collect(Collectors.toList()));
+                    Pair<List<String>, List<String>> pair = provider.getTextAndScore(lines);
+                    List<String> textLines = pair.getKey().stream().map(this::replace).collect(Collectors.toList());
+                    List<String> scoreLines = pair.getValue().stream().map(score -> score == null ? null : this.replace(score)).collect(Collectors.toList());
+                    fastBoard.updateLines(textLines, scoreLines);
                 }
 
                 @Override
