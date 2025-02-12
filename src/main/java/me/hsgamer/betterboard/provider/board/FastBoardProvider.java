@@ -2,8 +2,9 @@ package me.hsgamer.betterboard.provider.board;
 
 import me.hsgamer.betterboard.api.provider.BoardProcess;
 import me.hsgamer.betterboard.api.provider.ConfigurableBoardProvider;
+import me.hsgamer.betterboard.provider.board.internal.AdventureFastBoardProcess;
 import me.hsgamer.betterboard.provider.board.internal.BoardFrame;
-import me.hsgamer.betterboard.provider.board.internal.FastBoardProcess;
+import me.hsgamer.betterboard.provider.board.internal.LegacyFastBoardProcess;
 import me.hsgamer.betterboard.provider.condition.ConditionProvider;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.hscore.config.Config;
@@ -19,6 +20,18 @@ public abstract class FastBoardProvider implements ConfigurableBoardProvider {
     public static final String LINES_PATH = "lines";
     private static final String USE_MINIMESSAGE_PATH = "use-minimessage";
     private static final String SCORE_SEPARATOR = "score-separator";
+    private static final boolean ADVENTURE_SUPPORT;
+
+    static {
+        boolean adventureSupport = false;
+        try {
+            Class.forName("net.kyori.adventure.text.Component");
+            adventureSupport = true;
+        } catch (Exception ignored) {
+            // IGNORED
+        }
+        ADVENTURE_SUPPORT = adventureSupport;
+    }
 
     private final ConditionProvider conditionProvider = new ConditionProvider();
     private boolean useMiniMessage = false;
@@ -50,7 +63,11 @@ public abstract class FastBoardProvider implements ConfigurableBoardProvider {
 
     @Override
     public BoardProcess createProcess(Player player) {
-        return new FastBoardProcess(player, this);
+        if (ADVENTURE_SUPPORT) {
+            return new AdventureFastBoardProcess(player, this);
+        } else {
+            return new LegacyFastBoardProcess(player, this);
+        }
     }
 
     public boolean isUseMiniMessage() {
