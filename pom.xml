@@ -13,7 +13,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <minelib.version>1.2.1</minelib.version>
+        <minelib.version>1.2.5</minelib.version>
         <core.version>4.5.7</core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
