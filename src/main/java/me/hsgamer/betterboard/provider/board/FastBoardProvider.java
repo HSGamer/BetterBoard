@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 public abstract class FastBoardProvider implements ConfigurableBoardProvider {
     public static final String TITLE_PATH = "title";
@@ -62,7 +63,7 @@ public abstract class FastBoardProvider implements ConfigurableBoardProvider {
 
     public Pair<String, String> getTextAndScore(String value) {
         if (!scoreSeparator.isEmpty() && value.contains(scoreSeparator)) {
-            String[] split = value.split(scoreSeparator, 2);
+            String[] split = value.split(Pattern.quote(scoreSeparator), 2);
             return Pair.of(split[0], split.length > 1 ? split[1] : null);
         } else {
             return Pair.of(value, null);
