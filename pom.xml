@@ -6,7 +6,7 @@
 
     <groupId>me.hsgamer</groupId>
     <artifactId>betterboard</artifactId>
-    <version>3.3-SNAPSHOT</version>
+    <version>3.3</version>
     <packaging>jar</packaging>
 
     <name>BetterBoard</name>
