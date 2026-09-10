@@ -50,8 +50,8 @@ public abstract class FastBoardProcess implements BoardProcess {
                 }
                 operator = null;
             }
-        } catch (RuntimeException ignored) {
-            // IGNORED
+        } catch (RuntimeException exception) {
+            throw new IllegalStateException("Failed to update FastBoard for " + player.getName(), exception);
         }
     }
 

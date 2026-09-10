@@ -4,6 +4,7 @@ import io.github.projectunified.minelib.scheduler.async.AsyncScheduler;
 import io.github.projectunified.minelib.scheduler.common.scheduler.Scheduler;
 import io.github.projectunified.minelib.scheduler.common.task.Task;
 import io.github.projectunified.minelib.scheduler.entity.EntityScheduler;
+import io.github.projectunified.minelib.scheduler.common.util.Platform;
 import me.hsgamer.betterboard.BetterBoard;
 import me.hsgamer.betterboard.api.provider.BoardProcess;
 import me.hsgamer.betterboard.api.provider.BoardProvider;
@@ -25,7 +26,10 @@ public class Board implements Runnable {
         this.player = player;
 
         long update = instance.get(MainConfig.class).getUpdateTicks();
-        boolean async = instance.get(MainConfig.class).isUpdateAsync();
+        // Player-bound work must run on the owning entity's scheduler on Folia.
+        // In particular, PlaceholderAPI expansions are not guaranteed to be safe
+        // when called from Folia's general async scheduler.
+        boolean async = instance.get(MainConfig.class).isUpdateAsync() && !Platform.FOLIA.isPlatform();
         update = Math.max(update, 0);
         Scheduler scheduler = async ? AsyncScheduler.get(instance) : EntityScheduler.get(instance, player);
         task = scheduler.runTimer(this, update, update);
@@ -59,8 +63,9 @@ public class Board implements Runnable {
                 process.stop();
                 currentProcess.set(null);
             }
-        } catch (RuntimeException ignored) {
-            // IGNORED
+        } catch (RuntimeException exception) {
+            instance.getLogger().log(java.util.logging.Level.SEVERE,
+                    "Failed to update the board for " + player.getName(), exception);
         }
     }
 }

@@ -14,7 +14,7 @@ public interface MainConfig {
 
     @ConfigPath({"update", "async"})
     default boolean isUpdateAsync() {
-        return true;
+        return false;
     }
 
     @ConfigPath(value = "priority-providers", converter = StringListConverter.class)

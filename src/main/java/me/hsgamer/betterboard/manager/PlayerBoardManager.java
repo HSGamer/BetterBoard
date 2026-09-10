@@ -1,14 +1,17 @@
 package me.hsgamer.betterboard.manager;
 
 import io.github.projectunified.minelib.plugin.base.Loadable;
+import io.github.projectunified.minelib.plugin.postenable.PostEnable;
 import me.hsgamer.betterboard.BetterBoard;
 import me.hsgamer.betterboard.board.Board;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class PlayerBoardManager implements Loadable {
-    private final Map<UUID, Board> boardMap = Collections.synchronizedMap(new HashMap<>());
+public class PlayerBoardManager implements Loadable, PostEnable {
+    private final Map<UUID, Board> boardMap = new ConcurrentHashMap<>();
     private final BetterBoard instance;
 
     public PlayerBoardManager(BetterBoard instance) {
@@ -20,7 +23,8 @@ public class PlayerBoardManager implements Loadable {
     }
 
     public void addBoard(Player player) {
-        boardMap.put(player.getUniqueId(), new Board(instance, player));
+        Board replacement = new Board(instance, player);
+        Optional.ofNullable(boardMap.put(player.getUniqueId(), replacement)).ifPresent(Board::cancel);
     }
 
     public void removeBoard(Player player) {
@@ -30,6 +34,11 @@ public class PlayerBoardManager implements Loadable {
     public void clearAll() {
         boardMap.values().forEach(Board::cancel);
         boardMap.clear();
+    }
+
+    @Override
+    public void postEnable() {
+        Bukkit.getOnlinePlayers().forEach(this::addBoard);
     }
 
     @Override
