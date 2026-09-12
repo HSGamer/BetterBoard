@@ -4,7 +4,43 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-  - package-ecosystem: 'github-actions'
-    directory: '/'
+    groups:
+      # One PR for all safe patch/minor bumps, majors stay separate for review
+      maven-patch-minor:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
+    ignore:
+      # MiniPlaceholders v3 rewrites the API (getAudiencePlaceholders removed);
+      # upgrading past 2.x requires migrating MiniPlaceholdersHook first
+      - dependency-name: "io.github.miniplaceholders:miniplaceholders-api"
+        versions:
+          - ">= 3.0.0"
+      # hscore-expression was discontinued after 4.5.7 and the hscore modules
+      # must stay on a uniform version, so hold the whole set at 4.5.7
+      - dependency-name: "me.hsgamer:*"
+        versions:
+          - "> 4.5.7"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "build"
+    open-pull-requests-limit: 10
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
-      interval: 'daily'
+      interval: "weekly"
+    groups:
+      actions-patch-minor:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "ci"
+    open-pull-requests-limit: 10
