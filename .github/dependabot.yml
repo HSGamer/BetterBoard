@@ -23,6 +23,13 @@ updates:
       - dependency-name: "me.hsgamer:*"
         versions:
           - "> 4.5.7"
+      # paper-api tracks the supported Minecraft version; bumping it is a
+      # functional change, so it stays manual and is never auto-updated
+      - dependency-name: "io.papermc.paper:paper-api"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
     labels:
       - "dependencies"
     commit-message:
