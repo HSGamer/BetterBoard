@@ -123,7 +123,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.18.2-R0.1-SNAPSHOT</version>
+            <version>1.21.11-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -226,11 +226,10 @@
             <version>5.11.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Held on 2.x: MiniPlaceholders v3 rewrites the API; upgrading requires migrating MiniPlaceholdersHook -->
         <dependency>
             <groupId>io.github.miniplaceholders</groupId>
             <artifactId>miniplaceholders-api</artifactId>
-            <version>2.3.0</version>
+            <version>3.2.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

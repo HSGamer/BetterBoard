@@ -22,8 +22,7 @@ public class MiniPlaceholdersHook {
     }
 
     public static Component toMiniComponent(Player player, String message) {
-        TagResolver tagResolver = MiniPlaceholders.getGlobalPlaceholders();
-        tagResolver = TagResolver.resolver(tagResolver, MiniPlaceholders.getAudiencePlaceholders(player));
-        return MiniMessage.miniMessage().deserialize(message, tagResolver);
+        TagResolver tagResolver = MiniPlaceholders.audienceGlobalPlaceholders();
+        return MiniMessage.miniMessage().deserialize(message, player, tagResolver);
     }
 }
