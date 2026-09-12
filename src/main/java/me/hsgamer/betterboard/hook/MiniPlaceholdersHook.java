@@ -16,9 +16,27 @@ public class MiniPlaceholdersHook {
 
     public static boolean isAvailable() {
         if (available == null) {
-            available = Bukkit.getPluginManager().isPluginEnabled("MiniPlaceholders");
+            available = Bukkit.getPluginManager().isPluginEnabled("MiniPlaceholders")
+                    && hasMethod(MiniPlaceholders.class, "audienceGlobalPlaceholders")
+                    && hasMethod(MiniMessage.class, "deserialize",
+                    "java.lang.String",
+                    "net.kyori.adventure.pointer.Pointered",
+                    "net.kyori.adventure.text.minimessage.tag.resolver.TagResolver");
         }
         return available;
+    }
+
+    private static boolean hasMethod(Class<?> clazz, String name, String... parameterTypeNames) {
+        try {
+            Class<?>[] parameterTypes = new Class<?>[parameterTypeNames.length];
+            for (int i = 0; i < parameterTypeNames.length; i++) {
+                parameterTypes[i] = Class.forName(parameterTypeNames[i]);
+            }
+            clazz.getMethod(name, parameterTypes);
+            return true;
+        } catch (ReflectiveOperationException | SecurityException | LinkageError e) {
+            return false;
+        }
     }
 
     public static Component toMiniComponent(Player player, String message) {

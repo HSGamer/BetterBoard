@@ -13,6 +13,12 @@ updates:
           - "patch"
           - "minor"
     ignore:
+      # MiniPlaceholders past 3.1.0 targets Java 25 (class version 69) and
+      # cannot even compile on this repo's JDK 21 toolchain; lift the cap
+      # only when the build moves to JDK 25+
+      - dependency-name: "io.github.miniplaceholders:miniplaceholders-api"
+        versions:
+          - "> 3.1.0"
       # hscore-expression was discontinued after 4.5.7 and the hscore modules
       # must stay on a uniform version, so hold the whole set at 4.5.7
       - dependency-name: "me.hsgamer:*"
